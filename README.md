@@ -27,7 +27,20 @@ In this specifc Dockerfile there is Micro-C tool (https://micro-c.readthedocs.io
 
 ***Run the analysis step by step***
 
+*Before starting*
+
 If test data are needed
 ```
 wget https://s3.amazonaws.com/dovetail.pub/HiC/fastqs/MicroC_2M_R1.fastq\nwget https://s3.amazonaws.com/dovetail.pub/HiC/fastqs/MicroC_2M_R2.fastq
 ```
+Reference genome, index file, chromosome file are needed. I downloaded mm39 reference. 
+
+Note: To use samtools faidx the genome has to be bgzipped, if differntly zipped, unzip it and re-zip it with bgxzip
+```
+  samtools faidx mm39.fa.gz
+  cut -f1,2 mm39.fa.gz.fai > mm39.genome
+  bwa index mm39.fa.gz
+```
+
+
+
