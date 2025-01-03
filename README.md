@@ -17,6 +17,9 @@ docker build --platform linux/amd64 -t microc .
 
 . tells to build the image in the directory where you are
 
+If you want to be able to access som efiles in the external from the image, add --rm -v <dir_you_want_to_acess>:/<where_you_want_it_on_the_image>
+Note: it cannot be a prexisting dir (built with the dockerfile), it would overwrite it, deleting everyhting there is inside
+
 4. Run the container
 ```
 docker run --platform linux/amd64 -it microc
@@ -25,7 +28,7 @@ Now you are inside the container and can work in it interactively with the comma
 
 In this specifc Dockerfile there is Micro-C tool (https://micro-c.readthedocs.io/en/latest/before_you_begin.html) with all its dependencies, in the correct versions. 
 
-# Run the analysis step by step**
+# Run the analysis step by step
 
 ## Before starting
 
@@ -41,6 +44,10 @@ samtools faidx mm39.fa.gz \
 cut -f1,2 mm39.fa.gz.fai > mm39.genome \
 bwa index mm39.fa.gz
 ```
+If the reference genome and the other files are already present somewhere external to the  image you can, while building it do ```
+docker run -it --rm -v /Users/cecilia.carmignoto/references:/references --platform linux/amd64 microc 
+```
+
 ## Step 1 Generate sam file
 
 Note: the reference genome has to be indexed. 
@@ -51,6 +58,7 @@ bwa mem -5SP -T0 -t8  ../../references/mm39/mm39.fa.gz ../Micro-C/test_data/Micr
 ```
 pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in 5 --nproc-out 5 --chroms-path ../../references/mm39/mm39.genome MicroC_2M_aligned.sam > parsed.pairsam
 ```
+docker run -it --rm -v /path/to/local/dir:/path/in/container image_name
 
 
 
