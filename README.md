@@ -25,3 +25,9 @@ Now you are inside the container and can work in it interactively with the comma
 
 In this specifc Dockerfile there is Micro-C tool (https://micro-c.readthedocs.io/en/latest/before_you_begin.html) with all its dependencies, in the correct versions. 
 
+***Run the analysis step by step***
+
+If test data are needed
+```
+wget https://s3.amazonaws.com/dovetail.pub/HiC/fastqs/MicroC_2M_R1.fastq\nwget https://s3.amazonaws.com/dovetail.pub/HiC/fastqs/MicroC_2M_R2.fastq
+```
