@@ -44,7 +44,8 @@ samtools faidx mm39.fa.gz \
 cut -f1,2 mm39.fa.gz.fai > mm39.genome \
 bwa index mm39.fa.gz
 ```
-If the reference genome and the other files are already present somewhere external to the  image you can, while building it do ```
+If the reference genome and the other files are already present somewhere external to the  image you can, while building it do 
+```
 docker run -it --rm -v /Users/cecilia.carmignoto/references:/references --platform linux/amd64 microc 
 ```
 
