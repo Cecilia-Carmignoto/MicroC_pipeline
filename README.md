@@ -52,10 +52,13 @@ docker run -it --rm -v /Users/cecilia.carmignoto/references:/references --platfo
 ## Step 1 Generate sam file
 
 Note: the reference genome has to be indexed. 
+
 ```
 bwa mem -5SP -T0 -t8  ../../references/mm39/mm39.fa.gz ../Micro-C/test_data/MicroC_2M_R1.fastq ../Micro-C/test_data/MicroC_2M_R2.fastq > MicroC_2M_aligned.sam
 ```
+
 # Step 2. Record valid ligation events 
+
 ```
 pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in 5 --nproc-out 5 --chroms-path ../../references/mm39/mm39.genome MicroC_2M_aligned.sam > parsed.pairsam
 ```
