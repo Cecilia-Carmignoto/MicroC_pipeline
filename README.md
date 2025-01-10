@@ -36,9 +36,13 @@ If test data are needed
 ```
 wget https://s3.amazonaws.com/dovetail.pub/HiC/fastqs/MicroC_2M_R1.fastq\nwget https://s3.amazonaws.com/dovetail.pub/HiC/fastqs/MicroC_2M_R2.fastq
 ```
-Reference genome, index file, chromosome file are needed. I downloaded mm39 reference. 
+Reference genome, index file, chromosome file are needed. Download mm39 reference from UCSC
 
-Note: To use samtools faidx the genome has to be bgzipped, if differntly zipped, unzip it and re-zip it with bgxzip
+```
+wget -O mm39.fa.gz https://hgdownload.soe.ucsc.edu/goldenPath/mm39/bigZips/mm39.fa.gz
+```
+
+Note: To use samtools faidx the genome has to be bgzipped, if differently zipped, unzip it and re-zip it with bgxzip
 ```
 samtools faidx mm39.fa.gz \
 cut -f1,2 mm39.fa.gz.fai > mm39.genome \
