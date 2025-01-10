@@ -16,6 +16,8 @@ RUN sed -i 's/archive.ubuntu.com/archive.ubuntu.com/g' \
         /etc/apt/sources.list && \
     apt-get update --fix-missing && \
     apt-get upgrade -y && apt-get install -y \
+    apt-get install -y inetutils-ping \
+    apt-get install -y tabix \
     build-essential \
     python3 \
     python3-pip \

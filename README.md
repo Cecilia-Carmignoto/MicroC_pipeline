@@ -43,6 +43,12 @@ wget -O mm39.fa.gz https://hgdownload.soe.ucsc.edu/goldenPath/mm39/bigZips/mm39.
 ```
 
 Note: To use samtools faidx the genome has to be bgzipped, if differently zipped, unzip it and re-zip it with bgxzip
+
+```
+gunzip mm39.fa.gz \
+bgzip mm39.fa.gz
+```
+
 ```
 samtools faidx mm39.fa.gz \
 cut -f1,2 mm39.fa.gz.fai > mm39.genome \
@@ -66,6 +72,8 @@ bwa mem -5SP -T0 -t8  ../../references/mm39/mm39.fa.gz ../Micro-C/test_data/Micr
 ```
 pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in 5 --nproc-out 5 --chroms-path ../../references/mm39/mm39.genome MicroC_2M_aligned.sam > parsed.pairsam
 ```
+
+
 docker run -it --rm -v /path/to/local/dir:/path/in/container image_name
 
 
