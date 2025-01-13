@@ -77,6 +77,10 @@ pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --
 
 pairtools sort --nproc 5 --tmpdir=/tmp parsed.pairsamgenompy > sorted.pairsam
 
+ ## Step 4. Remove PCR duplicates
+
+pairtools dedup --nproc-in 5 --nproc-out 5 --mark-dups --output-stats stats.txt --output dedup.pairsam sorted.pairsam
+
 
 
 
