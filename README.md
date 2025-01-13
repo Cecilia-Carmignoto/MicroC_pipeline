@@ -36,7 +36,7 @@ If test data are needed
 ```
 wget https://s3.amazonaws.com/dovetail.pub/HiC/fastqs/MicroC_2M_R1.fastq\nwget https://s3.amazonaws.com/dovetail.pub/HiC/fastqs/MicroC_2M_R2.fastq
 ```
-Reference genome, index file, chromosome file are needed. Download mm39 reference from UCSC
+Reference genome, index file, chromosome file are needed. Download mm39 reference from UCSC:
 
 ```
 wget -O mm39.fa.gz https://hgdownload.soe.ucsc.edu/goldenPath/mm39/bigZips/mm39.fa.gz
@@ -48,13 +48,14 @@ Note: To use samtools faidx the genome has to be bgzipped, if differently zipped
 gunzip mm39.fa.gz \
 bgzip mm39.fa.gz
 ```
+Index the genome:
 
 ```
 samtools faidx mm39.fa.gz \
 cut -f1,2 mm39.fa.gz.fai > mm39.genome \
 bwa index mm39.fa.gz
 ```
-If the reference genome and the other files are already present somewhere external to the  image you can, while building it do 
+If the reference genome and the other files are already present somewhere external to the  image you can, while building the image mount the directory: 
 ```
 docker run -it --rm -v /Users/cecilia.carmignoto/references:/references --platform linux/amd64 microc 
 ```
@@ -64,17 +65,19 @@ docker run -it --rm -v /Users/cecilia.carmignoto/references:/references --platfo
 Note: the reference genome has to be indexed. 
 
 ```
-bwa mem -5SP -T0 -t8  ../../references/mm39/mm39.fa.gz ../Micro-C/test_data/MicroC_2M_R1.fastq ../Micro-C/test_data/MicroC_2M_R2.fastq > MicroC_2M_aligned.sam
+bwa mem -5SP -T0 -t8 references/mm39/mm39.fa.gz MicroC_2M_R1.fastq MicroC_2M_R2.fastq > MicroC_2M_aligned.sam
 ```
 
-# Step 2. Record valid ligation events 
+## Step 2. Record valid ligation events 
 
 ```
-pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in 5 --nproc-out 5 --chroms-path ../../references/mm39/mm39.genome MicroC_2M_aligned.sam > parsed.pairsam
+pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in 5 --nproc-out 5 --chroms-path references/mm39.genome MicroC_2M_aligned.sam > parsed.pairsam
 ```
+## Step 3. Sort the parsed.pairsam
+
+pairtools sort --nproc 5 --tmpdir=/tmp parsed.pairsamgenompy > sorted.pairsam
 
 
-docker run -it --rm -v /path/to/local/dir:/path/in/container image_name
 
 
 
