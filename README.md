@@ -17,8 +17,12 @@ docker build --platform linux/amd64 -t microc .
 
 . tells to build the image in the directory where you are
 
-If you want to be able to access som efiles in the external from the image, add --rm -v <dir_you_want_to_acess>:/<where_you_want_it_on_the_image>
+If you want to be able to access som efiles in the external from the image, add --rm -v <dir_you_want_to_acess>:<where_you_want_it_on_the_image>
 Note: it cannot be a prexisting dir (built with the dockerfile), it would overwrite it, deleting everyhting there is inside
+
+```
+docker run -it --rm -v /Users/cecilia.carmignoto/references:/references --platform linux/amd64 microc 
+```
 
 4. Run the container
 ```
@@ -34,7 +38,8 @@ In this specifc Dockerfile there is Micro-C tool (https://micro-c.readthedocs.io
 
 If test data are needed
 ```
-wget https://s3.amazonaws.com/dovetail.pub/HiC/fastqs/MicroC_2M_R1.fastq\nwget https://s3.amazonaws.com/dovetail.pub/HiC/fastqs/MicroC_2M_R2.fastq
+wget https://s3.amazonaws.com/dovetail.pub/HiC/fastqs/MicroC_2M_R1.fastq
+wget https://s3.amazonaws.com/dovetail.pub/HiC/fastqs/MicroC_2M_R2.fastq
 ```
 Reference genome, index file, chromosome file are needed. Download mm39 reference from UCSC:
 
@@ -54,10 +59,6 @@ Index the genome:
 samtools faidx mm39.fa.gz \
 cut -f1,2 mm39.fa.gz.fai > mm39.genome \
 bwa index mm39.fa.gz
-```
-If the reference genome and the other files are already present somewhere external to the  image you can, while building the image mount the directory: 
-```
-docker run -it --rm -v /Users/cecilia.carmignoto/references:/references --platform linux/amd64 microc 
 ```
 
 ## Step 1 Generate sam file
