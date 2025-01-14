@@ -7,7 +7,7 @@ docker info
 ```
 2. Write the Dockerfile with all the needed infos as in the example here
 
-3. Build the image
+3. Build the image (may need to add --no-cache)
 ```
 docker build --platform linux/amd64 -t microc .
 ```

@@ -9,7 +9,7 @@ RUN apt-get update
 RUN echo 'Acquire::http::Pipeline-Depth 0;\nAcquire::http::No-Cache true;\nAcquire::BrokenProxy true;\n' > /etc/apt/apt.conf.d/99fixbadproxy
 
 # Use old-releases mirrors
-RUN apt-get update --fix-missing && \
+RUN apt-get update --fix-missing -y && \
     apt-get upgrade -y && \
     apt-get install -y \
     inetutils-ping \
@@ -75,6 +75,11 @@ RUN git clone https://github.com/dovetail-genomics/Micro-C /${MICROC}
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
+# To run directly the analysis until the qc
+# the file I want to copy in the image, has to be in the directory I am building the container from
+COPY Analysis.sh /Analysis.sh
+RUN chmod +x Analysis.sh
+ENTRYPOINT ["Analysis.sh"]
 
 # Set entrypoint
-ENTRYPOINT ["/bin/bash"]
+#ENTRYPOINT ["/bin/bash"]

@@ -7,9 +7,9 @@ CORES=5                            # Number of processing cores
 DATA="data"                        # Directory containing the input FASTQ files
 
 # Download reference genome
-mkdir references
-cd references/
-wget -O "${GENOME}.fa.gz" "${GENOME_URL}"
+ mkdir references
+ cd references/
+ wget -O "${GENOME}.fa.gz" "${GENOME_URL}"
 
 # Uncompress the genome file
 gunzip "${GENOME}.fa.gz"
@@ -47,4 +47,5 @@ samtools sort -@${CORES} -T temp/temp.bam -o mapped.PT.bam unsorted.bam
 samtools index mapped.PT.bam
 
 # Step 7: Run QC script
-python3 get_qc.py -p stats.txt
+mkdir output
+python3 get_qc.py -p stats.txt > output/stats.txt
