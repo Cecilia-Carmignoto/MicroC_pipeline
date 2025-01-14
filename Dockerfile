@@ -9,9 +9,9 @@ RUN apt-get update
 RUN echo 'Acquire::http::Pipeline-Depth 0;\nAcquire::http::No-Cache true;\nAcquire::BrokenProxy true;\n' > /etc/apt/apt.conf.d/99fixbadproxy
 
 # Use old-releases mirrors
-RUN apt-get-update --fix-missing && \
-    apt-get upgrade && \
-    apt-get install \
+RUN apt-get update --fix-missing && \
+    apt-get upgrade -y && \
+    apt-get install -y \
     inetutils-ping \
     tabix \
     build-essential \
