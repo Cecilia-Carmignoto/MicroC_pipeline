@@ -12,7 +12,8 @@ RUN echo 'Acquire::http::Pipeline-Depth 0;\nAcquire::http::No-Cache true;\nAcqui
 RUN sed -i 's/archive.ubuntu.com/archive.ubuntu.com/g' \
         /etc/apt/sources.list && \
     sed -i 's/security.ubuntu.com/archive.ubuntu.com/g' \
-        /etc/apt/sources.list && \apt-get update --fix-missing && \
+        /etc/apt/sources.list && \
+    apt-get update --fix-missing && \
     apt-get upgrade -y && apt-get install -y \
     apt-get install -y inetutils-ping \
     apt-get install -y tabix \
