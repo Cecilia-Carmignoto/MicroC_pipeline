@@ -9,11 +9,7 @@ RUN apt-get update
 RUN echo 'Acquire::http::Pipeline-Depth 0;\nAcquire::http::No-Cache true;\nAcquire::BrokenProxy true;\n' > /etc/apt/apt.conf.d/99fixbadproxy
 
 # Use old-releases mirrors
-RUN sed -i 's/archive.ubuntu.com/archive.ubuntu.com/g' \
-        /etc/apt/sources.list && \
-    sed -i 's/security.ubuntu.com/archive.ubuntu.com/g' \
-        /etc/apt/sources.list && \
-    apt-get-update --fix-missing && \
+RUN apt-get-update --fix-missing && \
     apt-get upgrade && \
     apt-get install \
     inetutils-ping \
