@@ -91,6 +91,7 @@ COPY /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeline-2/analysis_scri
 RUN chmod +x /usr/local/bin/analysis_script.sh
 ENTRYPOINT ["/usr/local/bin/analysis_script.sh"]
 
+xxx
 
 
 
