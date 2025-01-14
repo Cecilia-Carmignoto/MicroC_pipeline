@@ -87,11 +87,9 @@ pairtools dedup --nproc-in 5 --nproc-out 5 --mark-dups --output-stats stats.txt 
 - download the data directly on the server? (is it gonna be still there) copy it from our server? --> we have to mount it 
 - we have to iterate for all samples
 - to run the analysis directy when running the container try:
-COPY /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeline-2/analysis_script.sh /usr/local/bin/analysis_script.sh
-RUN chmod +x /usr/local/bin/analysis_script.sh
-ENTRYPOINT ["/usr/local/bin/analysis_script.sh"]
-
-xxx
+COPY /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeline/analysis_script.sh /usr/local/bin/Analysis.sh
+RUN chmod +x /usr/local/bin/Analysis.sh
+ENTRYPOINT ["/usr/local/bin/Analysis.sh"]
 
 
 
