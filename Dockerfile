@@ -6,7 +6,6 @@ ENV MICROC=Micro-C
 
 RUN apt-get clean
 RUN apt-get update
-RUN echo 'Acquire::http::Pipeline-Depth 0;\nAcquire::http::No-Cache true;\nAcquire::BrokenProxy true;\n' > /etc/apt/apt.conf.d/99fixbadproxy
 
 # Use old-releases mirrors
 RUN apt-get update --fix-missing && \
