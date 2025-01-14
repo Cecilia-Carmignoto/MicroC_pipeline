@@ -67,7 +67,7 @@ RUN wget https://github.com/smithlabcode/preseq/releases/download/v3.1.2/preseq-
     make -j $(nproc) && make install && cd .. && rm -rf preseq-3.1.2*
 
 # Set working directory
-WORKDIR /${MICROC}
+WORKDIR /.
 
 # Clone Micro-C repository
 RUN git clone https://github.com/dovetail-genomics/Micro-C /${MICROC}
@@ -77,9 +77,10 @@ ENV LANG=C.UTF-8
 
 # To run directly the analysis until the qc
 # the file I want to copy in the image, has to be in the directory I am building the container from
-COPY Analysis.sh /${MICROC}/Analysis.sh
-RUN chmod +x /${MICROC}/Analysis.sh
-ENTRYPOINT ["/${MICROC}/Analysis.sh"]
+# CAREFUL: need to do <chmod +x Analysis.sh> nella dir dell'host
+COPY Analysis.sh /Analysis.sh
+#RUN chmod +x /Analysis.sh
+ENTRYPOINT ["sh","/Analysis.sh"]
 
 # Set entrypoint
 #ENTRYPOINT ["/bin/bash"]
