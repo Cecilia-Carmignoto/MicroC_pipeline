@@ -13,6 +13,7 @@ RUN sed -i 's/archive.ubuntu.com/archive.ubuntu.com/g' \
         /etc/apt/sources.list && \
     sed -i 's/security.ubuntu.com/archive.ubuntu.com/g' \
         /etc/apt/sources.list && \
+    apt-get-update --fix-missing && \
     apt-get upgrade && \
     apt-get install \
     inetutils-ping \
