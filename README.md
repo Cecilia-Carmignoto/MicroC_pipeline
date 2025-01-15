@@ -112,7 +112,7 @@ ENTRYPOINT ["sh","/Analysis.sh"]
 ```
 And comment the line ENTRYPOINT ["/bin/bash"]
 
-# Mount the volumes
+## Run image and mount the volumes
 Explained above. the dir data will have the fastq and the results will be saved in the dir output. 
 ```
 docker run -it --rm -v /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeline/data:/data\
@@ -121,22 +121,7 @@ docker run -it --rm -v /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeli
 ```
 
 
-## For me
+# For me
 - download the data directly on the server? (is it gonna be still there) copy it from our server? --> we have to mount it 
 - we have to iterate for all samples. Loop in the Analyis.sh? Parallelize how?
-
-
-
-# create output dir on my host 
-mkdir output
-# then run the container with the mounting of the volumes
-docker run --rm \
-  -v /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeline/Analysis.sh:/Analysis.sh \
-  -v /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeline/output:/output \
-  --platform linux/amd64 trytorundirectlyhello .
-
-  # then run the container with the mounting of the volumes
-docker run --rm \
-  -v /Users/cecilia.carmignoto/Documents/GitHub/try/Analysis.sh:/Analysis.sh \
-  -v /Users/cecilia.carmignoto/Documents/GitHub/try/output:/output \
-  --platform linux/amd64 trytorundirectlyhello .
+.
