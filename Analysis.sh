@@ -1,10 +1,10 @@
 #!/bin/bash
 # be sure to put the fastq data in the directory data
 # Set global variables
-GENOME="hg38"                      # Genome version
-GENOME_URL="https://hgdownload.soe.ucsc.edu/goldenPath/${GENOME}/bigZips/${GENOME}.fa.gz"
-CORES=5                            # Number of processing cores
-DATA="data"                        # Directory containing the input FASTQ files
+GENOME="hg38"
+GENOME_URL="https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz"
+CORES=5
+DATA="data"
 
 # Download reference genome
  wget -O "${GENOME}.fa.gz" "${GENOME_URL}"
@@ -31,8 +31,7 @@ bwa index "${GENOME}.fa.gz"
 bwa mem -5SP -T0 -t${CORES} "${GENOME}.fa.gz" "${DATA}/ MicroC_2M_R1.fastq" "${DATA}/ MicroC_2M_R2.fastq" > aligned.sam
 
 # Step 2: Record valid ligation events.
-pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in ${CORES} --nproc-out ${CORES} \
-    --chroms-path "${GENOME}.genome" aligned.sam > parsed.pairsam
+pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in ${CORES} --nproc-out ${CORES} --chroms-path "${GENOME}.genome" aligned.sam > parsed.pairsam
 
 # Step 3: Sort the parsed.pairsam.
 pairtools sort --nproc ${CORES} --tmpdir=/tmp parsed.pairsam > sorted.pairsam

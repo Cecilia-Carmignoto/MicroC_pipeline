@@ -50,7 +50,7 @@ wget -O mm39.fa.gz https://hgdownload.soe.ucsc.edu/goldenPath/mm39/bigZips/mm39.
 Note: To use samtools faidx the genome has to be bgzipped, if differently zipped, unzip it and re-zip it with bgxzip
 ```
 gunzip mm39.fa.gz \
-bgzip mm39.fa.gz
+bgzip mm39.fa
 ```
 Index the genome:
 ```
