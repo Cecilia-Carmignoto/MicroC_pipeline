@@ -23,9 +23,13 @@ samtools faidx "${GENOME}.fa.gz"
 # Create chromosome sizes file
 cut -f1,2 "${GENOME}.fa.gz.fai" > "${GENOME}.genome"
 
+# Keep only chr from 1 to 22
+grep -E '^chr([1-9]|1[0-9]|2[0-2])\t' hg38.genome > hg38.genome
+
 # BWA index
 bwa index "${GENOME}.fa.gz"
 cd ../
+
 # Step 1: Generate SAM file. Replace R1.fastq and R2.fastq with actual data.
 bwa mem -5SP -T0 -t${CORES} "references/${GENOME}.fa.gz" "${DATA}/R1.fastq" "${DATA}/R2.fastq" > aligned.sam
 

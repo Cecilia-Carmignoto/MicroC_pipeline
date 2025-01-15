@@ -78,8 +78,7 @@ ENV LANG=C.UTF-8
 # To run directly the analysis until the qc
 # the file I want to copy in the image, has to be in the directory I am building the container from
 COPY Analysis.sh /${MICROC}/Analysis.sh
-RUN chmod +x /${MICROC}/Analysis.sh
-ENTRYPOINT ["/${MICROC}/Analysis.sh"]
+ENTRYPOINT ["sh","/${MICROC}/Analysis.sh"]
 
 # Set entrypoint
 #ENTRYPOINT ["/bin/bash"]
