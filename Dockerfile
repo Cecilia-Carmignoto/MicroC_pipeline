@@ -67,7 +67,7 @@ RUN wget https://github.com/smithlabcode/preseq/releases/download/v3.1.2/preseq-
     make -j $(nproc) && make install && cd .. && rm -rf preseq-3.1.2*
 
 # Set working directory
-WORKDIR /.
+WORKDIR /
 
 # Clone Micro-C repository
 RUN git clone https://github.com/dovetail-genomics/Micro-C 

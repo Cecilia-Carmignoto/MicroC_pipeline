@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e # to make the script exit on first error
+
 # be sure to put the fastq data in the directory data
 # Set global variables
 GENOME="hg38"                      # Genome version
@@ -48,5 +50,5 @@ samtools sort -@${CORES} -T temp/temp.bam -o mapped.PT.bam unsorted.bam
 samtools index mapped.PT.bam
 
 # Step 7: Run QC script
-mkdir output
-python3 get_qc.py -p stats.txt > output/stats.txt
+mkdir -p output
+python3 get_qc.py -p stats.txt > /output/stats.txt
