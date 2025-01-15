@@ -112,10 +112,15 @@ ENTRYPOINT ["sh","/Analysis.sh"]
 ```
 And comment the line ENTRYPOINT ["/bin/bash"]
 
-## Run image and mount the volumes
+## Build, run image and mount the volumes
+Build image
+```
+docker build --platform linux/amd64 -t microc .
+```
+
 Explained above. the dir data will have the fastq and the results will be saved in the dir output. 
 ```
-docker run -it --rm -v /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeline/data:/data\
+docker run --rm -v /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeline/data:/data \
 -v /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeline/output:/output \
 --platform linux/amd64 microc . 
 ```
