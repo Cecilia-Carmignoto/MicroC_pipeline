@@ -11,8 +11,7 @@
 #SBATCH --job-name bwa_index # Job name that appear in squeue as well as in output and error text files
 #SBATCH --chdir /cecilia # This directory must exists, this is where will be the error and out files
 
-
-#genome_path="$HOME/references/mm39.fa.gz"
+mkdir -p $HOME/images
 images_path="$HOME/images"
 pathToGenomesTable="$HOME/genomes_table.txt"
 
@@ -52,7 +51,6 @@ singularity exec $images_path/samtools.1.11.sif samtools $*
 #################
 
 # Check set up
-
 bwa --version
 if [ $? -ne 0 ]
 then
@@ -64,15 +62,15 @@ fi
 genome=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $1}')
 filePathForFasta=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $2}')
 
-# Adapt basenamePathForB2Index to the name of the genome:
+# Adapt pathToBwaIndex to the name of the genome:
 pathToBwaIndex=${pathToBwaIndex/__genome__/${genome}}
 
-if [ ! -e ${pathToBwaIndex}. ]; then
+if [ ! -e ${pathToBwaIndex}.bwt ]; then
 
     samtools faidx $pathToBwaIndex
     cut -f1,2 "${pathToBwaIndex}.fai" > "${pathToBwaIndex}.genome"
     grep -E '^chr([1-9]|1[0-9]|2[0-2])\t' "${pathToBwaIndex}.genome" > "${pathToBwaIndex}.genome"
-    bwa index pathToBwaIndex
+    bwa index $pathToBwaIndex
 else
     echo "bwa index seems to already exists. If you want to regenerate it. Please remove it before running the job."
 fi

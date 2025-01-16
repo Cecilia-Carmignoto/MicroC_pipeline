@@ -18,6 +18,8 @@ gunzip -k $genome > genome_unzipped.fa
 bgzip genome_unzipped.fa > $genome # is it okay to run this in the front end?
 
 # Get our data from s3 with AWS
+mkdir="$HOME/fastq"
+cd $HOME/fastq
 
 
 
