@@ -58,6 +58,13 @@ then
   exit 1
 fi
 
+samtools --version
+if [ $? -ne 0 ]
+then
+  echo "samtools is not installed but required. Please install it"
+  exit 1
+fi
+
 # Get the genome name and fasta file from the table
 genome=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $1}')
 filePathForFasta=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $2}')

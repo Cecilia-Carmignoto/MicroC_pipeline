@@ -11,16 +11,47 @@
 #SBATCH --job-name bwa_index # Job name that appear in squeue as well as in output and error text files
 #SBATCH --chdir /cecilia # This directory must exists, this is where will be the error and out files
 
-
-
-
-
-
 # Set paths
-# 
 pathToGenome="$HOME/genomes/hg38.fa.gz"   # put right genome
 pathToFastqTable="$HOME/fastq/samples_fastq_table.txt"
+images_path="$HOME/images"
 
+
+# Preseq
+wget -O $images_path/preseq.3.1.2.sif''http://datacache.galaxyproject.org/singularity/all/preseq:3.1.2--h06ef8b0_1''
+function preseq() {
+singularity exec $images_path/preseq.3.1.2.sif preseq $*
+}
+
+# Micro-C
+RUN git clone https://github.com/dovetail-genomics/Micro-C 
+
+
+#################
+#### SCRIPT #####
+#################
+
+# Check set up
+bwa --version
+if [ $? -ne 0 ]
+then
+  echo "Bwa is not installed but required. Please install it"
+  exit 1
+fi
+
+samtools --version
+if [ $? -ne 0 ]
+then
+  echo "samtools is not installed but required. Please install it"
+  exit 1
+fi
+
+preseq --version
+if [ $? -ne 0 ]
+then
+  echo "samtools is not installed but required. Please install it"
+  exit 1
+fi
 
 # Get the genome name and fasta file from the table
 sample=$(cat ${pathToFastqTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $1}')
@@ -29,29 +60,37 @@ filePathForFastq2=$(cat ${pathToFastqTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'N
 
 
 
-mkdir $HOME/output
-mkdir $HOME/output/$sample
+mkdir $HOME/output/
+mkdir $HOME/output/$sample/
 
-sample_output_dir="$HOME/output/$sample"
+sample_output_dir="$HOME/output/$sample/"
 
 # Step 1: Generate SAM file. Replace R1.fastq and R2.fastq with actual data.
-bwa mem -5SP -T0 -t${CORES} $pathToGenome $filePathForFastq1 $filePathForFastq2 > "$sample_output_dir/${sample}.aligned.sam"
+bwa mem -5SP -T0 -t${CORES} $pathToGenome $filePathForFastq1 $filePathForFastq2 > "${sample_output_dir}aligned.sam"
 
 # Step 2: Record valid ligation events.
-pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in ${CORES} --nproc-out ${CORES} --chroms-path "$pathToGenome.genome" "$sample_output_dir/${sample}.aligned.sam" > "$sample_output_dir/${sample}.parsed.pairsam"
+pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in ${CORES} --nproc-out ${CORES} --chroms-path "${pathToGenome}.genome" "${sample_output_dir}aligned.sam" > "${sample_output_dir}parsed.pairsam"
 
 # Step 3: Sort the parsed.pairsam.
-pairtools sort --nproc ${CORES} --tmpdir=/tmp "$sample_output_dir/${sample}.parsed.pairsam" > "$sample_output_dir/${sample}.sorted.pairsam"
+pairtools sort --nproc ${CORES} --tmpdir=/tmp "${sample_output_dir}parsed.pairsam" > "${sample_output_dir}sorted.pairsam"
 
 # Step 4: Remove PCR duplicates
-pairtools dedup --nproc-in ${CORES} --nproc-out ${CORES} --mark-dups --output-stats "$sample_output_dir/${sample}stats.txt" --output "$sample_output_dir/${sample}.dedup.pairsam" "$sample_output_dir/${sample}.sorted.pairsam"
+pairtools dedup --nproc-in ${CORES} --nproc-out ${CORES} --mark-dups --output-stats "${sample_output_dir}stats.txt" --output "${sample_output_dir}dedup.pairsam" "${sample_output_dir}sorted.pairsam"
 
 # Step 5: Generate .pair and BAM files
-pairtools split --nproc-in ${CORES} --nproc-out ${CORES} --output-pairs mapped.pairs --output-sam "$sample_output_dir/${sample}.unsorted.bam" "$sample_output_dir/${sample}.dedup.pairsam"
+pairtools split --nproc-in ${CORES} --nproc-out ${CORES} --output-pairs mapped.pairs --output-sam "${sample_output_dir}unsorted.bam" "${sample_output_dir}dedup.pairsam"
 
 # Step 6: Sort and index BAM file
-samtools sort -@${CORES} -T temp/temp.bam -o "$sample_output_dir/${sample}.mapped.PT.bam" "$sample_output_dir/${sample}.unsorted.bam" 
+samtools sort -@${CORES} -T temp/temp.bam -o "${sample_output_dir}mapped.PT.bam" "${sample_output_dir}unsorted.bam" 
 samtools index "$sample_output_dir/${sample}.mapped.PT.bam"
 
 # Step 7: Run QC script
-python3 get_qc.py -p "$sample_output_dir/${sample}stats.txt" > "$sample_output_dir/${sample}.stats.txt
+python3 get_qc.py -p "${sample_output_dir}stats.txt" 
+
+# Save the stats in a common file for all samples
+mkdir $HOME/output/stats_all/
+
+touch $HOME/output/stats_all/stats_all.txt
+
+echo -e "$sample" >> $HOME/output/stats_all/stats_all.txt
+cat "${sample_output_dir}stats.txt" >> "$HOME/output/stats_all/
