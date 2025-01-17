@@ -17,7 +17,7 @@ cd $SCR/genomes
 # Pull Images
 # bgzip is in the image of samtools
 # samtools
-wget -nc -O $pathToImages/samtools.1.11.sif ''http://datacache.galaxyproject.org/singularity/all/samtools:1.11--h6270b1f_0''
+wget -nc -O $pathToImages/samtools.1.11.sif "http://datacache.galaxyproject.org/singularity/all/samtools:1.11--h6270b1f_0"
 function samtools() {
 singularity exec $pathToImages/samtools.1.11.sif samtools $*
 }
@@ -35,13 +35,22 @@ wget -nc -O $genomeName $genomeURL
 gunzip -k $genomeName > genomeUnzipped.fa
 bgzip genomeUnzipped.fa > $genomeName # is it okay to run this in the front end?
 rm genomeUnzipped.fa
-
+cd $SCR/
 
 
 # Get our data from s3 with AWS
 
 # Save the samples fastq in 
 pathToFastq="$SRC/fastq/"
+
+
+# image with aws
+# aws configure
+
+# aws s3 sync s3://musgzjor-598731762349/F24A430002451_MUSgzjoR_24DEC2024/ $SRC/fastq > permanent_transfert.log 2> permanent_transfert.err
+# better sync then cp, sync doesnt start over again if fails
+
+
 
 # URL：https://s3.console.aws.amazon.com/s3/buckets/musgzjor-598731762349?region=eu-west-3&tab=objects
 

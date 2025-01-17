@@ -31,7 +31,7 @@ pathToImages="$SRC/images"
 # Note: is it better to use $* or $@
 
 # bwa
-wget -nc -O $pathToImages/bwa_0.7.18.sif 'http://datacache.galaxyproject.org/singularity/all/bwa:0.7.18--he4a0461_1'
+wget -nc -O $pathToImages/bwa_0.7.18.sif "http://datacache.galaxyproject.org/singularity/all/bwa:0.7.18--he4a0461_1"
 function bwa() {
 singularity exec $pathToImages/bwa_0.7.18.sif bwa $*
 }
