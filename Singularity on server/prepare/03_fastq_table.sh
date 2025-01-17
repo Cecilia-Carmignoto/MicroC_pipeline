@@ -1,13 +1,19 @@
 #!/bin/bash
 
+# Script to generate the samplesFastqTable where:
+# firt column is the sample name
+# second column is the fastq1 path
+# third column is the fasq2 path
+
 # Define the parent directory containing sample folders
-parent_dir="$HOME/fastq/F24A430002451_MUSgzjoR_24DEC2024"
+mkdir $SRC/fastq/
+pathToFastq="$SRC/fastq/"
 
 # Initialize the output file
-output_file="$HOME/fastq/samples_fastq_table.txt"
+output_file="$pathToFastq/samplesFastqTable.txt"
 
 # Iterate over each sample directory
-for sample_dir in "$parent_dir"/*/; do
+for sample_dir in "$pathToFastq"/*/; do
     # Extract the sample name (folder name)
     sample_name=$(basename "$sample_dir")
 
