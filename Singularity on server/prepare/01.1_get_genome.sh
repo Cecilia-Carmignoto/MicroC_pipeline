@@ -1,10 +1,9 @@
 # TO RUN ONLY ONCE
 # Download of the reference genome
-# Download of the samples data
-# at line 11 choose the reference genome. (check genomes_table.txt and chose the line)
+# at line 10 choose the reference genome. (check genomesTable.txt and chose the line)
 
 # Define paths
-# CHECK: The table genomes_table.txt has to be already generated. (See README.md)
+# CHECK: The table genomesTable.txt has to be already generated. (See README.md)
 # first column is the genome name
 # second column is the absolute path for fasta
 pathToGenomesTable="$SCR/genomes/genomesTable.txt"
@@ -12,7 +11,6 @@ genomeLine=1            # Set the line number of genomesTable.txt of the genome 
 mkdir -p $SCR/genomes
 mkdir -p $SRC/images
 pathToImages="$SRC/images"
-cd $SCR/genomes
 
 # Pull Images
 # bgzip is in the image of samtools
@@ -31,41 +29,9 @@ genomeName=$(cat ${pathToGenomesTable} | awk -v i=$genomeLine 'NR==i{print $1}')
 genomeURL=$(cat ${pathToGenomesTable} | awk -v i=$genomeLine 'NR==i{print $2}')
 
 # Download genome
+cd $SCR/genomes
 wget -nc -O $genomeName $genomeURL
 gunzip -k $genomeName > genomeUnzipped.fa
 bgzip genomeUnzipped.fa > $genomeName # is it okay to run this in the front end?
 rm genomeUnzipped.fa
 cd $SCR/
-
-
-# Get our data from s3 with AWS
-
-# Save the samples fastq in 
-pathToFastq="$SRC/fastq/"
-
-
-# image with aws
-# aws configure
-
-# aws s3 sync s3://musgzjor-598731762349/F24A430002451_MUSgzjoR_24DEC2024/ $SRC/fastq > permanent_transfert.log 2> permanent_transfert.err
-# better sync then cp, sync doesnt start over again if fails
-
-
-
-# URL：https://s3.console.aws.amazon.com/s3/buckets/musgzjor-598731762349?region=eu-west-3&tab=objects
-
-# Project：F24A430002451_MUSgzjoR
-
-# Alias ID：598731762349
-
-# S3 Bucket：musgzjor-598731762349
-
-# Account：musgzjor
-
-# Password：nL8]Y|$K|1Q5
-
-# Region：eu-west-3
-
-# Aws_access_key_id：AKIAYWZZRVKWRKSBNUF3
-
-# Aws_secret_access_key：w7c1VsxjyVtg4ryS2FrZHqTFUFd/2E8/q5mbRH/q

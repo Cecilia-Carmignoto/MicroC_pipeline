@@ -15,7 +15,7 @@
 pathToGenome="$SRC/genomes/hg38.fa.gz"   # put right genome
 pathToFastqTable="$SRC/fastq/samplesFastqTable.txt"
 pathToImages="$SRC/images"
-binSizeCoolMatrix=1000
+binSizeCoolMatrix=1000      #bin size, in bp, for the .cool file
 CORES=${SLURM_CPUS_PER_TASK}
 
 # IMAGES
@@ -143,6 +143,5 @@ cat "${sample_output_dir}stats.txt" >> "$SRC/output/stats_all/"
 # Generate contact matrix for .pairs with cooler
 bgzip "${sample_output_dir}mapped.pairs" > "${sample_output_dir}mapped.pairs.gz"
 pairix "${sample_output_dir}mapped.pairs" > "${sample_output_dir}mapped.pairs.gz"
-cooler cload pairix -p 16 "${pathToGenome}.genome":$binSizeCoolMatrix "${sample_output_dir}mapped.pairs.gz" "matrix${binSizeCoolMatrix}bp.cool"
-
-#add zoomify
+cooler cload pairix -p 16 "${pathToGenome}.genome":$binSizeCoolMatrix "${sample_output_dir}mapped.pairs.gz" "${sample_output_dir}matrix${binSizeCoolMatrix}bp.cool"
+cooler zoomify --balance -p ${CORES} "${sample_output_dir}matrix${binSizeCoolMatrix}bp.cool"
