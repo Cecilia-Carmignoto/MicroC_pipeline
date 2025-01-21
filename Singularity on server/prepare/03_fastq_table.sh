@@ -6,8 +6,8 @@
 # third column is the fasq2 path
 
 # Define the parent directory containing sample folders
-mkdir $SRC/fastq/
-pathToFastq="$SRC/fastq/"
+mkdir -p $microc/fastq/
+pathToFastq="$microc/fastq/"
 
 # Initialize the output file
 output_file="$pathToFastq/samplesFastqTable.txt"

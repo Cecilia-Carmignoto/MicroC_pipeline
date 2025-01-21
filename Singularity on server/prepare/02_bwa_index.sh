@@ -9,36 +9,31 @@
 #SBATCH --time 3:00:00 # This depends on the size of the fasta
 #SBATCH --array=1 # Put here the rows from the table that need to be processed in the table
 #SBATCH --job-name bwa_index # Job name that appear in squeue as well as in output and error text files
-#SBATCH --chdir /cecilia # This directory must exists, this is where will be the error and out files
+#SBATCH --chdir $SRC/cecilia # This directory must exists, this is where will be the error and out files
 
 #################
 #### SET UP #####
 #################
 
-# Set paths
-# The table genomes_table.txt has to be already generated. (See README.md)
+# Set paths and dirs
+# The table genomesTable.txt has to be already generated. (See README.md)
 # first column is the genome name
 # second column is the absolute path for fasta
 pathToGenomesTable="$SRC/genomes/genomesTable.txt"
-pathToBwaIndex="$SRC/genomes/__genome__"
+mkdir -p $SRC/genomes/bwaIndex/
+pathToBwaIndex="$SRC/genomes/bwaIndex/__genome__"
 pathToImages="$SRC/images"
-# Pull tools/softwares images
-# Use singularity to pull from quai: and manage dependencies:
-# singularity pull $pathToImages/bwa_0.7.18 docker://quay.io/biocontainers/bwa:0.7.18--he4a0461_1 
-# Or use wget
-# Then define function to be able to call the executable 
- 
-# Note: is it better to use $* or $@
 
+#################
+#### SCRIPT #####
+#################
+
+# Pull images
 # bwa
 wget -nc -O $pathToImages/bwa_0.7.18.sif "http://datacache.galaxyproject.org/singularity/all/bwa:0.7.18--he4a0461_1"
 function bwa() {
 singularity exec $pathToImages/bwa_0.7.18.sif bwa $*
 }
-
-#################
-#### SCRIPT #####
-#################
 
 # To index the genome are needed bwa and samtools
 # Check they are properly installed
@@ -58,7 +53,7 @@ fi
 
 # Get the genome name and fasta file from the genomesTable
 genome=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $1}')
-filePathForFasta=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $2}')
+#filePathForFasta=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $2}')
 
 # Adapt pathToBwaIndex to the name of the genome:
 pathToBwaIndex=${pathToBwaIndex/__genome__/${genome}}

@@ -3,7 +3,7 @@
 # Pull aws image
 
 # Save the samples fastq in 
-pathToFastq="$SRC/fastq/"
+pathToFastq="$microc/fastq/"
 pathToImages="$SRC/images"
 
 # image with aws

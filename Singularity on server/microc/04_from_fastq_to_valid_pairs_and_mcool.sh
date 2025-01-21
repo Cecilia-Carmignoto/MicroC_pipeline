@@ -13,7 +13,7 @@
 
 # Set paths
 pathToGenome="$SRC/genomes/hg38.fa.gz"   # put right genome
-pathToFastqTable="$SRC/fastq/samplesFastqTable.txt"
+pathToFastqTable="$microc/fastq/samplesFastqTable.txt"
 pathToImages="$SRC/images"
 binSizeCoolMatrix=1000      #bin size, in bp, for the .cool file
 CORES=${SLURM_CPUS_PER_TASK}
@@ -107,10 +107,10 @@ sample=$(cat ${pathToFastqTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print 
 pathToFastq1=$(cat ${pathToFastqTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $2}')
 pathToFastq2=$(cat ${pathToFastqTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $3}')
 
-mkdir $SRC/output/      
-mkdir $SRC/output/$sample/
+mkdir -p $microc/output/      
+mkdir -p $microc/output/$sample/
 
-sample_output_dir="$SRC/output/$sample/"
+sample_output_dir="$SRmicrocC/output/$sample/"
 
 # Generate SAM file. Replace R1.fastq and R2.fastq with actual data.
 bwa mem -5SP -T0 -t${CORES} $pathToGenome $pathToFastq1 $pathToFastq2 > "${sample_output_dir}aligned.sam"
@@ -135,10 +135,10 @@ pairtools split --nproc-in ${CORES} --nproc-out ${CORES} --output-pairs "${sampl
 python get_qc.py -p "${sample_output_dir}stats.txt" 
 
 # Save the stats in a common file for all samples
-mkdir $SRC/output/stats_all/
-touch $SRC/output/stats_all/stats_all.txt
-echo -e "$sample" >> $SRC/output/stats_all/stats_all.txt
-cat "${sample_output_dir}stats.txt" >> "$SRC/output/stats_all/"
+mkdir $microc/output/stats_all/
+touch $microc/output/stats_all/stats_all.txt
+echo -e "$sample" >> $microc/output/stats_all/stats_all.txt
+cat "${sample_output_dir}stats.txt" >> "$microc/output/stats_all/"
 
 # Generate contact matrix for .pairs with cooler
 bgzip "${sample_output_dir}mapped.pairs" > "${sample_output_dir}mapped.pairs.gz"
