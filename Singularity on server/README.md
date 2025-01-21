@@ -1,6 +1,7 @@
 
 # Introductiom
 Here you find the scripts to run a Micro-C analysis. 
+
 To handle dependencies singularity images have been used from http://datacache.galaxyproject.org/singularity/all/.
 
 The pipeline follows https://micro-c.readthedocs.io/en/latest/index.html.
@@ -23,7 +24,7 @@ mkdir $SRC/genomes
 $SRC/cecilia 
 ```
 
-## Reference genome table
+## Create reference genome table
 Generate table for the reference genome data.
 In the genomes table: first column is the genome name in the format hg38.fa.gz, second column is the http of the fastq to be downloaded.
 ```
@@ -43,7 +44,7 @@ get the fastq files form s3 with aws.
 ./01.2_get_fastq.sh
 ```
 
-## Sequencing data reference table
+## Create Sequencing data reference table
 Generate tables for the sequencing data.
 In the samplesFastqTable: first column is the sample name, second column is the fastq1 path, third column is the fastq2 path.
 CHECK: fastq names have to end in '1.fq.gz' (for read 1), '2.fq.gz' (for read 2)

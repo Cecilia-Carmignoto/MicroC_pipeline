@@ -2,6 +2,10 @@
 # Download of the reference genome
 # at line 10 choose the reference genome. (check genomesTable.txt and chose the line)
 
+#################
+#### SET UP #####
+#################
+
 # Define paths
 # CHECK: The table genomesTable.txt has to be already generated. (See README.md)
 # first column is the genome name
@@ -11,6 +15,10 @@ genomeLine=1            # Set the line number of genomesTable.txt of the genome 
 mkdir -p $SCR/genomes
 mkdir -p $SRC/images
 pathToImages="$SRC/images"
+
+#################
+#### SCRIPT #####
+#################
 
 # Pull Images
 # bgzip is in the image of samtools

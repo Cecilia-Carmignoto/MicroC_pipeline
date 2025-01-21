@@ -5,9 +5,17 @@
 # second column is the fastq1 path
 # third column is the fasq2 path
 
+#################
+#### SET UP #####
+#################
+
 # Define the parent directory containing sample folders
 mkdir -p $microc/fastq/
 pathToFastq="$microc/fastq/"
+
+#################
+#### SCRIPT #####
+#################
 
 # Initialize the output file
 output_file="$pathToFastq/samplesFastqTable.txt"

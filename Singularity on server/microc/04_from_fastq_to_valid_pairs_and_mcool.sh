@@ -11,12 +11,21 @@
 #SBATCH --job-name bwa_index # Job name that appear in squeue as well as in output and error text files
 #SBATCH --chdir /cecilia # This directory must exists, this is where will be the error and out files
 
+#################
+#### SET UP #####
+#################
+
 # Set paths
 pathToGenome="$SRC/genomes/hg38.fa.gz"   # put right genome
 pathToFastqTable="$microc/fastq/samplesFastqTable.txt"
 pathToImages="$SRC/images"
 binSizeCoolMatrix=1000      #bin size, in bp, for the .cool file
 CORES=${SLURM_CPUS_PER_TASK}
+
+#################
+#### SCRIPT #####
+#################
+
 
 # IMAGES
 wget -nc -O $pathToImages/pairtools.0.3.0 "http://datacache.galaxyproject.org/singularity/all/pairtools:0.3.0--py37h4eba2af_0"
