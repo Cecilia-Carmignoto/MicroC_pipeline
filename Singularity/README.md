@@ -21,7 +21,7 @@ cd $HOME
 git clone https://github.com/Cecilia-Carmignoto/Micro-C_pipeline
 ```
 
-Add pilot and realdata dirs!!
+Export variables for dirs in the ./bashrc
 ```
 echo 'export SRC=/travail/ijerkovic/NGS' >> $HOME/.bashrc
 echo 'export microc=$SRC/microc' >> $HOME/.bashrc 
@@ -47,6 +47,7 @@ Make scripts executable
 chmod +x $PREP/01.1_get_genome.sh
 chmod +x $PREP/01.2_get_fastq.sh
 chmod +x $PREP/03_fastq_table.sh
+chmod +x $PREP/02_bwa_index.sh
 chmod +x $RUN/04_from_fastq_to_valid_pairs_and_mcool.sh
 ```
 

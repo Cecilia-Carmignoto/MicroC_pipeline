@@ -10,9 +10,9 @@
 # CHECK: The table genomesTable.txt has to be already generated. (See README.md)
 # first column is the genome name
 # second column is the absolute path for fasta
-pathToGenomesTable="$SCR/genomes/genomesTable.txt"
+pathToGenomesTable="$SRC/genomes/genomesTable.txt"
 genomeLine=1            # Set the line number of genomesTable.txt of the genome to download (line 1 hg38, line 2 mm39)
-mkdir -p $SCR/genomes
+mkdir -p $SRC/genomes
 mkdir -p $SRC/images
 pathToImages="$SRC/images"
 
@@ -32,14 +32,14 @@ function bgzip() {
 singularity exec $pathToImages/samtools.1.11.sif bgzip $*
 }
 
-# Get the genome name and fasta file from the genomes_table.txt
+# Get the genome name and fasta file from the genomesTable.txt
 genomeName=$(cat ${pathToGenomesTable} | awk -v i=$genomeLine 'NR==i{print $1}') 
 genomeURL=$(cat ${pathToGenomesTable} | awk -v i=$genomeLine 'NR==i{print $2}')
 
 # Download genome
-cd $SCR/genomes
+cd $SRC/genomes
 wget -nc -O $genomeName $genomeURL
 gunzip -k $genomeName > genomeUnzipped.fa
 bgzip genomeUnzipped.fa > $genomeName # is it okay to run this in the front end?
 rm genomeUnzipped.fa
-cd $SCR/
+cd $SRC
