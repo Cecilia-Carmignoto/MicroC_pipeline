@@ -39,7 +39,8 @@ genomeURL=$(cat ${pathToGenomesTable} | awk -v i=$genomeLine 'NR==i{print $2}')
 # Download genome
 cd $SRC/genomes
 wget -nc -O $genomeName $genomeURL
-gunzip -k $genomeName > genomeUnzipped.fa
-bgzip genomeUnzipped.fa > $genomeName # is it okay to run this in the front end?
+gunzip -c $genomeName > genomeUnzipped.fa
+bgzip genomeUnzipped.fa # is it okay to run this in the front end?
+mv genomeUnzipped.fa.gz $genomeName
 rm genomeUnzipped.fa
 cd $SRC
