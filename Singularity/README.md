@@ -72,6 +72,7 @@ bash $PREP/01.2_get_fastq.sh
 
 ## Index the genome
 -chdir $SRC is to set the dir where to write outputs that have no path indication in the scripts and for the .log and error files.
+Modify the SBATCH --array=x with the row/rows from the table that need to be processed in the table
 ```
 sbatch -chdir $SRC $PREP/02_bwa_index.sh
 ```

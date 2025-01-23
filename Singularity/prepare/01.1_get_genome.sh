@@ -11,7 +11,7 @@
 # first column is the genome name
 # second column is the absolute path for fasta
 pathToGenomesTable="$SRC/genomes/genomesTable.txt"
-genomeLine=1            # Set the line number of genomesTable.txt of the genome to download (line 1 hg38, line 2 mm39)
+genomeLine=2            # Set the line number of genomesTable.txt of the genome to download (line 1 hg38, line 2 mm39)
 mkdir -p $SRC/genomes
 mkdir -p $SRC/images
 pathToImages="$SRC/images"

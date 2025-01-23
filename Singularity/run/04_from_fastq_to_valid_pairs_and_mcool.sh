@@ -16,7 +16,7 @@
 #################
 
 # Set paths
-pathToGenome="$SRC/genomes/hg38.fa.gz"   # put right genome
+pathToGenome="$SRC/genomes/mm39.fa.gz"   # put right genome
 pathToFastqTable="$microc/fastq/samplesFastqTable.txt"
 pathToImages="$SRC/images"
 binSizeCoolMatrix=1000      #bin size, in bp, for the .cool file
