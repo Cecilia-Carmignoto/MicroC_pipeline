@@ -1,6 +1,6 @@
 # TO RUN ONLY ONCE
 # Download of the reference genome
-# at line 10 choose the reference genome. (check genomesTable.txt and chose the line)
+# Choose which reference genome to use by setting the variable genomeLine. (check genomesTable.txt and chose the line)
 
 #################
 #### SET UP #####

@@ -9,7 +9,6 @@
 #SBATCH --time 3:00:00 # This depends on the size of the fasta
 #SBATCH --array=1 # Put here the rows from the table that need to be processed in the table
 #SBATCH --job-name bwa_index # Job name that appear in squeue as well as in output and error text files
-#SBATCH --chdir $SRC/cecilia # This directory must exists, this is where will be the error and out files
 
 #################
 #### SET UP #####

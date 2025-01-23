@@ -9,7 +9,7 @@
 #SBATCH --time 3:00:00 # This depends on the size of the fasta
 #SBATCH --array=1-25 # Put here the rows from the table that need to be processed in the table
 #SBATCH --job-name bwa_index # Job name that appear in squeue as well as in output and error text files
-#SBATCH --chdir /cecilia # This directory must exists, this is where will be the error and out files
+#SBATCH --chdir /cecilia # This directory must exists, this is where will be the error and out files. and where it starts
 
 #################
 #### SET UP #####
@@ -48,10 +48,6 @@ singularity exec $pathToImages/cooler.0.10.3 pairix $*
 
 # python QC script
 wget -nc -0 $pathToImages/get_qc.py https://raw.githubusercontent.com/dovetail-genomics/Micro-C/refs/heads/main/get_qc.py
-
-#################
-#### SCRIPT #####
-#################
 
 # Check installations 
 bwa --version
@@ -154,3 +150,4 @@ bgzip "${sample_output_dir}mapped.pairs" > "${sample_output_dir}mapped.pairs.gz"
 pairix "${sample_output_dir}mapped.pairs" > "${sample_output_dir}mapped.pairs.gz"
 cooler cload pairix -p 16 "${pathToGenome}.genome":$binSizeCoolMatrix "${sample_output_dir}mapped.pairs.gz" "${sample_output_dir}matrix${binSizeCoolMatrix}bp.cool"
 cooler zoomify --balance -p ${CORES} "${sample_output_dir}matrix${binSizeCoolMatrix}bp.cool"
+
