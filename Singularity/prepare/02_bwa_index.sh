@@ -1,14 +1,19 @@
 #!/bin/bash
 
+#SBATCH --job-name bwa_index 
+#SBATCH --time 2:00:00 
+#SBATCH --clusters=mesopsl1
+#SBATCH --partition=def
+#SBATCH --qos=mesopsl1_def_long
+#SBATCH --account=ijerkovic
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=12 #max in mesopsl1 is 16 so let's try
+#SBATCH --mem-per-cpu=50G # The memory needed depends on the size of the genome
 #SBATCH -o slurm-%x-%A_%2a.out # Template for the std output of the job uses the job name, the job id and the array id
 #SBATCH -e slurm-%x-%A_%2a.err # Template for the std error of the job
-#SBATCH --nodes 1 # We always use 1 node
-#SBATCH --ntasks 1 # In this script everything is sequencial
-#SBATCH --mem 50G # The memory needed depends on the size of the genome
-#SBATCH --cpus-per-task 24 # This allows to speed the indexing
-#SBATCH --time 3:00:00 # This depends on the size of the fasta
 #SBATCH --array=2 # Put here the rows from the table that need to be processed in the table
-#SBATCH --job-name bwa_index # Job name that appear in squeue as well as in output and error text files
+
 
 #################
 #### SET UP #####
@@ -36,7 +41,8 @@ singularity exec $pathToImages/bwa_0.7.18.sif bwa $*
 
 # To index the genome are needed bwa and samtools
 # Check they are properly installed
-bwa --version
+# bwa --version doesn't work on masopsl1
+bwa >> slurm-$SLURM_JOB_NAME-%$SLURM_JOB_ID%$SLURM_ARRAY_TASK_ID.err 
 if [ $? -ne 0 ]
 then
   echo "Bwa is not installed but required. Please install it"

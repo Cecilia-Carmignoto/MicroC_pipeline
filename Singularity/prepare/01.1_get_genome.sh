@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e # if a line in the middle fails the script fails
+
 # TO RUN ONLY ONCE
 # Download of the reference genome
 # Choose which reference genome to use by setting the variable genomeLine. (check genomesTable.txt and chose the line)
