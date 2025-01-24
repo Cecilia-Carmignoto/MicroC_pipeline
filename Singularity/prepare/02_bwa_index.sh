@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #SBATCH --job-name bwa_index 
-#SBATCH --time 2:00:00 
+#SBATCH --time 10:00 
 #SBATCH --clusters=mesopsl1
-#SBATCH --partition=def
-#SBATCH --qos=mesopsl1_def_long
+#SBATCH --partition=hi
+#SBATCH --qos=mesopsl1_hi_short	
 #SBATCH --account=ijerkovic
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
