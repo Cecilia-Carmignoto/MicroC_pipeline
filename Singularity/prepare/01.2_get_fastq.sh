@@ -8,9 +8,12 @@ pathToImages="$SRC/images"
 
 # Pull Images
 # aws
-wget -nc -O $pathToImages/awscli.1.8.3.sif "http://datacache.galaxyproject.org/singularity/all/awscli:1.8.3--py35_0"
+if [ ! -e $pathToImages/aws-cli_2.23.6.sif ]; then
+    singularity pull docker://amazon/aws-cli:2.23.6
+    mv aws-cli_2.23.6.sif $pathToImages/
+fi
 function aws() {
-  singularity exec $pathToImages/awscli.1.8.3.sif aws $*
+  singularity exec $pathToImages/aws-cli_2.23.6.sif aws $*
 }
 
 # check it is properly installed
