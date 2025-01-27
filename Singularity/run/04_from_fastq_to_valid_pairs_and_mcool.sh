@@ -71,6 +71,10 @@ wget -nc -O $pathToImages/bwa_0.7.18.sif "http://datacache.galaxyproject.org/sin
 function bwa() {
   singularity exec $pathToImages/bwa_0.7.18.sif bwa $*
 }
+wget -nc -O $pathToImages/samtools.1.11.sif "http://datacache.galaxyproject.org/singularity/all/samtools:1.11--h6270b1f_0"
+function samtools() {
+  singularity exec $pathToImages/samtools.1.11.sif samtools $*
+}
 wget -nc -O $pathToImages/pairtools.0.3.0 "http://datacache.galaxyproject.org/singularity/all/pairtools:0.3.0--py37h4eba2af_0"
 function pairtools() {
   singularity exec $pathToImages/pairtools.0.3.0 pairtools $*
