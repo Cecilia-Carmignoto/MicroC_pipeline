@@ -19,11 +19,12 @@ For github set up: generate tocken form Setting > Developer settings > Personal 
 ```
 cd $HOME 
 git clone https://github.com/Cecilia-Carmignoto/Micro-C_pipeline
+checkout Lucille
 ```
 
 Export variables for dirs in the ./bashrc
 ```
-echo 'export SRC=/travail/ijerkovic/NGS' >> $HOME/.bashrc
+echo 'export SRC=/scratch/ldelisle/NGS' >> $HOME/.bashrc
 echo 'export microc=$SRC/microc' >> $HOME/.bashrc 
 echo 'export microcPilot=$SRC/microc/pilot' >> $HOME/.bashrc 
 echo 'export microcFullData=$SRC/microc/fullData' >> $HOME/.bashrc 
