@@ -46,3 +46,11 @@ wget -nc -O $filePathForFasta $genomeURL
 gunzip -c $filePathForFasta > genomeUnzipped.fa
 bgzip genomeUnzipped.fa # is it okay to run this in the front end? yes
 mv genomeUnzipped.fa.gz $filePathForFasta
+
+# Generate the genome file only with numbered chromosomes:
+if [ ! -e ${filePathForFasta}.fai ]; then
+  samtools faidx "$filePathForFasta"
+fi
+cut -f1,2 "${filePathForFasta}.fai" > "${filePathForFasta}.genome"
+# Filter to get only the numbered chromosomes:
+grep -P '^chr([1-9]|1[0-9]|2[0-2])\t' "${filePathForFasta}.genome" > "$SRC/genomes/fasta/${genomeName}_chrNumbered.genome"
