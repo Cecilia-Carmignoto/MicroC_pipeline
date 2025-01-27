@@ -44,13 +44,14 @@ function samtools() {
 }
 # To index the genome are needed bwa and samtools
 # Check they are properly installed
-# bwa --version doesn't work on masopsl1
-bwa >> slurm-$SLURM_JOB_NAME-%$SLURM_JOB_ID%$SLURM_ARRAY_TASK_ID.err 
-if [ $? -ne 0 ]
+# bwa --version doesn't work
+v=$(bwa 2>&1)
+if [[ "$v" = *"command not found" ]]
 then
   echo "Bwa is not installed but required. Please install it"
   exit 1
 fi
+echo $v
 
 samtools --version
 if [ $? -ne 0 ]
