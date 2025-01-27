@@ -150,7 +150,7 @@ then
 fi
 
 tabulate --version
-if [ $? -ne 0 ]
+if [ $? -ne 2 ]
 then
   echo "tabulate is not installed but required. Please install it"
   exit 1
