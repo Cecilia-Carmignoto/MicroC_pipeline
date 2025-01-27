@@ -293,8 +293,7 @@ else
   echo "${sample}.pairs.gz already exists"
 fi
 # Index them
-# Not sure about the tbi
-if [ ! -e ${sample}.pairs.gz.tbi ]; then
+if [ ! -e ${sample}.pairs.gz.px2 ]; then
   pairix "${sample}.pairs.gz"
 else
   echo "${sample}.pairs.gz already indexed"
