@@ -307,7 +307,7 @@ fi
 # Zoomify
 if [ ! -e ${sample}.mcool ]; then
   # Waiting to find a bug fix for this
-  singularity exec $pathToImages/cooler.0.10.3 cooler zoomify --balance -p ${nbOfThreads} --resolutions ${binSizeCoolMatrix}000N -o ${sample}.mcool --balance-args '--nproc $nbOfThreads --cis-only' ${nb}${sample}_raw.${binSizeCoolMatrix}kb.cool
+  singularity exec $pathToImages/cooler.0.10.3 cooler zoomify --balance -p ${nbOfThreads} --resolutions ${binSizeCoolMatrix}000N -o ${sample}.mcool --balance-args '--nproc 24 --cis-only' ${nb}${sample}_raw.${binSizeCoolMatrix}kb.cool
 else
   echo "${sample}.mcool already exists"
 fi
