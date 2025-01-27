@@ -307,7 +307,7 @@ else
 fi
 # Zoomify
 if [ ! -e ${sample}.mcool ]; then
-  cooler zoomify --balance -p ${nbOfThreads} --resolutions ${binSizeCoolMatrix}000N -o ${sample}.mcool "matrix${binSizeCoolMatrix}bp.cool"
+  cooler zoomify --balance -p ${nbOfThreads} --resolutions ${binSizeCoolMatrix}000N -o ${sample}.mcool ${sample}_raw.${binSizeCoolMatrix}kb.cool
 else
   echo "${sample}.mcool already exists"
 fi
