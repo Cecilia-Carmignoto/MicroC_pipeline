@@ -250,7 +250,7 @@ else
 fi
 
 # Sort the parsed.pairsam.
-if [ ! -e sorted.pairsam]; then
+if [ ! -e sorted.pairsam ]; then
   pairtools sort --nproc ${nbOfThreads} --tmpdir=$(mktemp -d) "parsed.pairsam" > "sorted.pairsam"
 else
   echo "sorted.pairsam already exists"
