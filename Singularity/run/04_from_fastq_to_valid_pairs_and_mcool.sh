@@ -175,7 +175,8 @@ then
   exit 1
 fi
 
-pairix --version
+# pairix --version
+pairix --help
 if [ $? -ne 0 ]
 then
   echo "pairix is not installed but required. Please install it"
