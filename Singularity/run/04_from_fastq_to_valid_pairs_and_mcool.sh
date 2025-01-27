@@ -75,6 +75,10 @@ wget -nc -O $pathToImages/samtools.1.11.sif "http://datacache.galaxyproject.org/
 function samtools() {
   singularity exec $pathToImages/samtools.1.11.sif samtools $*
 }
+# bgzip from samtools
+function bgzip() {
+  singularity exec $pathToImages/samtools.1.11.sif bgzip $*
+}
 wget -nc -O $pathToImages/pairtools.0.3.0 "http://datacache.galaxyproject.org/singularity/all/pairtools:0.3.0--py37h4eba2af_0"
 function pairtools() {
   singularity exec $pathToImages/pairtools.0.3.0 pairtools $*
@@ -83,6 +87,9 @@ function pairtools() {
 wget -nc -O $pathToImages/tabulate:0.7.5--py36_0 "https://depot.galaxyproject.org/singularity/tabulate:0.7.5--py36_0"
 function python() {
   singularity exec $pathToImages/tabulate:0.7.5--py36_0 python $*
+}
+function tabulate() {
+  singularity exec $pathToImages/tabulate:0.7.5--py36_0 tabulate $*
 }
 
 wget -nc -O $pathToImages/cooler.0.10.3 "https://depot.galaxyproject.org/singularity/cooler:0.10.3--pyhdfd78af_0"
@@ -167,6 +174,13 @@ pairix --version
 if [ $? -ne 0 ]
 then
   echo "pairix is not installed but required. Please install it"
+  exit 1
+fi
+
+pgt --version
+if [ $? -ne 0 ]
+then
+  echo "pyGenomeTracks is not installed but required. Please install it"
   exit 1
 fi
 
