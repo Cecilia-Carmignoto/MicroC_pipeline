@@ -15,6 +15,8 @@ fi
 function aws() {
   singularity exec $pathToImages/aws-cli_2.23.6.sif aws $*
 }
+# Give access to pathToFastq
+export APPTAINER_BIND=$SRC
 
 # check it is properly installed
 aws --version 
