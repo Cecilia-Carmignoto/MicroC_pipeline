@@ -7,7 +7,7 @@
 #SBATCH --mem 50G # The memory needed depends on the size of the genome
 #SBATCH --cpus-per-task 24 # This allows to speed the indexing
 #SBATCH --time 3:00:00 # This depends on the size of the fasta
-#SBATCH --array=2-25 # Put here the rows from the table that need to be processed in the table
+#SBATCH --array=2-2,5-7,10-10,12-13,17-17 # Put here the rows from the table that need to be processed in the table
 #SBATCH --job-name runMicroC # Job name that appear in squeue as well as in output and error text files
 
 ##################################
@@ -166,7 +166,6 @@ then
   echo "argparse is not installed but required. Please install it"
   exit 1
 fi
-rm test_argparse.py
 
 cooler --version
 if [ $? -ne 0 ]
