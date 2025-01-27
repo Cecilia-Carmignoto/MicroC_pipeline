@@ -156,12 +156,17 @@ then
   exit 1
 fi
 
-python -c "import argparse;print(argparse.__version__)"
+# This is not working with singularity because of the quotes
+# python -c "import argparse;print(argparse.__version__)"
+
+echo "import argparse;print(argparse.__version__)" > test_argparse.py
+python test_argparse.py
 if [ $? -ne 0 ]
 then
   echo "argparse is not installed but required. Please install it"
   exit 1
 fi
+rm test_argparse.py
 
 cooler --version
 if [ $? -ne 0 ]
