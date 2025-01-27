@@ -8,7 +8,7 @@
 #SBATCH --mem-per-cpu=50G # The memory needed depends on the size of the genome
 #SBATCH -o slurm-%x-%A_%2a.out # Template for the std output of the job uses the job name, the job id and the array id
 #SBATCH -e slurm-%x-%A_%2a.err # Template for the std error of the job
-#SBATCH --array=2 # Put here the rows from the table that need to be processed in the table
+#SBATCH --array=2-2 # Put here the rows from the table that need to be processed in the table
 
 
 #################
