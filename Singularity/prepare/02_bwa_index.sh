@@ -36,9 +36,12 @@ pathToImages="$SRC/images"
 # bwa
 wget -nc -O $pathToImages/bwa_0.7.18.sif "http://datacache.galaxyproject.org/singularity/all/bwa:0.7.18--he4a0461_1"
 function bwa() {
-singularity exec $pathToImages/bwa_0.7.18.sif bwa $*
+  singularity exec $pathToImages/bwa_0.7.18.sif bwa $*
 }
-
+wget -nc -O $pathToImages/samtools.1.11.sif "http://datacache.galaxyproject.org/singularity/all/samtools:1.11--h6270b1f_0"
+function samtools() {
+  singularity exec $pathToImages/samtools.1.11.sif samtools $*
+}
 # To index the genome are needed bwa and samtools
 # Check they are properly installed
 # bwa --version doesn't work on masopsl1
