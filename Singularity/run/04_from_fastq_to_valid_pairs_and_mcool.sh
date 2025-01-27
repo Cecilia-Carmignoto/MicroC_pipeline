@@ -321,6 +321,7 @@ file = ${sample}.mcool::/resolutions/${bin}000
 depth = 2000000
 min_value = 0
 title = ${sample}_${bin}kb
+file_type = hic_matrix
 [spacer]
 " >> ${ini_file}
 done
