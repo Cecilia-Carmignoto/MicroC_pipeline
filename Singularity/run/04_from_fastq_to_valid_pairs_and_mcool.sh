@@ -208,7 +208,7 @@ echo ${sample}
 cd ${pathResults}
 
 # Generate SAM file
-if [ ! -e aligned.sam ]; then
+if [ ! -e ${sample}.sam ]; then
   if [ ! -e ${dirPathForFastq}/${relFilePathFastqR1} ]; then
     # If the fastq does not exists we assume it was an SRA ID
     mkdir -p ${dirPathForFastq}
@@ -237,58 +237,58 @@ Please install it for example in the conda environment (sra-tools>=2.11)."
     exit 1
   fi
   bwa mem -5SP -T0 -t${nbOfThreads} $pathToBwaIndex ${dirPathForFastq}/${relFilePathFastqR1} \
-    ${dirPathForFastq}/${relFilePathFastqR2} > aligned.sam
+    ${dirPathForFastq}/${relFilePathFastqR2} > ${sample}.sam
 else
-  echo "aligned.sam already exists"
+  echo "${sample}.sam already exists"
 fi
 
 # Record valid ligation events.
-if [ ! -e parsed.pairsam ]; then
-  pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --chroms-path "$filePathForSizesForBin" "aligned.sam" > "parsed.pairsam"
+if [ ! -e ${sample}.parsed.pairsam ]; then
+  pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --chroms-path "$filePathForSizesForBin" "${sample}.sam" > "${sample}.parsed.pairsam"
 else
-  echo "parsed.pairsam already exists"
+  echo "${sample}.parsed.pairsam already exists"
 fi
 
-# Sort the parsed.pairsam.
-if [ ! -e sorted.pairsam ]; then
-  pairtools sort --nproc ${nbOfThreads} --tmpdir=$(mktemp -d) "parsed.pairsam" > "sorted.pairsam"
+# Sort the ${sample}.parsed.pairsam.
+if [ ! -e ${sample}.sorted.pairsam ]; then
+  pairtools sort --nproc ${nbOfThreads} --tmpdir=$(mktemp -d) "${sample}.parsed.pairsam" > "${sample}.sorted.pairsam"
 else
-  echo "sorted.pairsam already exists"
+  echo "${sample}.sorted.pairsam already exists"
 fi
 
 # Remove PCR duplicates
-if [ ! -e dedup.pairsam ]; then
-  pairtools dedup --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --mark-dups --output-stats "stats.txt" --output "dedup.pairsam" "sorted.pairsam"
+if [ ! -e ${sample}.dedup.pairsam ]; then
+  pairtools dedup --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --mark-dups --output-stats "${sample}.stats.txt" --output "${sample}.dedup.pairsam" "${sample}.sorted.pairsam"
 else
-  echo "dedup.pairsam already exists"
+  echo "${sample}.dedup.pairsam already exists"
 fi
 
 # Generate .pair and BAM files
-if [ ! -e mapped.pairs ]; then
-  pairtools split --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --output-pairs "mapped.pairs" --output-sam "unsorted.bam" "dedup.pairsam"
+if [ ! -e ${sample}.mapped.pairs ]; then
+  pairtools split --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --output-pairs "${sample}.mapped.pairs" --output-sam "${sample}.unsorted.bam" "${sample}.dedup.pairsam"
 else
-  echo "mapped.pairs already exists"
+  echo "${sample}.mapped.pairs already exists"
 fi
 
 ## Sort and index BAM file
 # Can be used to generate a coverage
-# samtools sort -@${nbOfThreads} -T temp/temp.bam -o "mapped.PT.bam" "unsorted.bam" 
+# samtools sort -@${nbOfThreads} -T temp/temp.bam -o "mapped.PT.bam" "${sample}.unsorted.bam" 
 # samtools index "$sample_output_dir/${sample}.mapped.PT.bam"
 
 # Run QC script
-python get_qc.py -p "stats.txt" 
+python $dirPathForScripts/get_qc.py -p "${sample}.stats.txt"  > ${sample}.pretty.stats.txt
 
 # I think we will do it with multiQC
 # # Save the stats in a common file for all samples
 # mkdir $microc/output/stats_all/
 # touch $microc/output/stats_all/stats_all.txt
 # echo -e "$sample" >> $microc/output/stats_all/stats_all.txt
-# cat "stats.txt" >> "$microc/output/stats_all/"
+# cat "${sample}.stats.txt" >> "$microc/output/stats_all/"
 
 # Generate contact matrix for .pairs with cooler
 # Bgzip the pairs:
 if [ ! -e ${sample}.pairs.gz ]; then
-  bgzip -c "mapped.pairs" > "${sample}.pairs.gz"
+  bgzip -c "${sample}.mapped.pairs" > "${sample}.pairs.gz"
 else
   echo "${sample}.pairs.gz already exists"
 fi
@@ -334,7 +334,7 @@ pgt --tracks ${ini_file} --region ${testRegion} --fontSize 6 -o ${ini_file/.ini/
 mkdir -p ${dirPathWithResults}/allFinalFiles/cool
 cp *.mcool ${dirPathWithResults}/allFinalFiles/cool/
 mkdir -p ${dirPathWithResults}/allFinalFiles/reports
-cp stats.txt ${dirPathWithResults}/allFinalFiles/reports/${sample}.stats.txt
+cp *.stats.txt ${dirPathWithResults}/allFinalFiles/reports/
 mkdir -p ${dirPathWithResults}/allFinalFiles/pairs
 cp ${sample}.pairs.gz ${dirPathWithResults}/allFinalFiles/pairs/
 mkdir -p ${dirPathWithResults}/allFinalFiles/visualisation
