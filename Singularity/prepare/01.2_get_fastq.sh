@@ -6,8 +6,12 @@
 pathToFastq="$microcPilot/fastq/"
 pathToImages="$SRC/images"
 
-# image with aws
-singularity pull $pathToImages/docker://amazon/aws-cli
+# Pull Images
+# aws
+wget -nc -O $pathToImages/awscli.1.8.3.sif "http://datacache.galaxyproject.org/singularity/all/awscli:1.8.3--py35_0"
+function aws() {
+  singularity exec $pathToImages/awscli.1.8.3.sif aws $*
+}
 
 # check it is properly installed
 aws --version 
