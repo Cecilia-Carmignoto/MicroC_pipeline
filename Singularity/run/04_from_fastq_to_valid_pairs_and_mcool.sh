@@ -7,55 +7,115 @@
 #SBATCH --mem 50G # The memory needed depends on the size of the genome
 #SBATCH --cpus-per-task 24 # This allows to speed the indexing
 #SBATCH --time 3:00:00 # This depends on the size of the fasta
-#SBATCH --array=1-25 # Put here the rows from the table that need to be processed in the table
-#SBATCH --job-name bwa_index # Job name that appear in squeue as well as in output and error text files
-#SBATCH --chdir /cecilia # This directory must exists, this is where will be the error and out files. and where it starts
+#SBATCH --array=1-1 # Put here the rows from the table that need to be processed in the table
+#SBATCH --job-name runMicroC # Job name that appear in squeue as well as in output and error text files
 
-#################
-#### SET UP #####
-#################
+##################################
+#### TO SET FOR EACH ANALYSIS ####
+##################################
 
-# Set paths
-pathToGenome="$SRC/genomes/mm39.fa.gz"   # put right genome
-pathToFastqTable="$microc/fastq/samplesFastqTable.txt"
+### Specify the options for your analysis:
+# number of CPU to use
+# Only change if you don't want to use all CPUs allocated
+nbOfThreads=${SLURM_CPUS_PER_TASK}
+# Which genome to map on
+genome=mm39
+#bin size, in kb, for the .cool file
+binSizeCoolMatrix=1
+# Define a test region for a pgt plot (must be inside the captured region if it is a capture)
+# chr7:155000000-158000000 SHH hg38
+# chr2:174800000-177800000 HOXD hg38
+# chr3:65103500-68603411 Shox2 CaptureC mm39
+# chr2:73150000-76150000 HoxD mm39
+# chr2:73779626-75669724 HoxD mm10
+testRegion="chr2:73150000-76150000"
+# bins size (in kb) for the plot:
+bins="5 50 500"
+
+
+### Specify the paths
+
+# Put in dirPathWithResults the directory
+# where a directory will be created
+# for each sample
+dirPathWithResults="$microcPilot/outputs/"
+# Where fastqs are stored:
+dirPathForFastq="${microcPilot}/fastq/"
+# This script will use get_qc.py
+# from Micro-C:
+# https://raw.githubusercontent.com/dovetail-genomics/Micro-C/refs/heads/main/get_qc.py
+# If it does not exists
+# The python script will be put in dirPathForScripts
+dirPathForScripts="$SRC/images/"
+# All samples are registered into a table where
+# first column is the sample name
+# second column is the path of the R1 fastq relatively to dirPathForFastq
+# third column is same for R2
+# Alternatively second column can be SRA number but third column must be filled by anything for example also the SRA number
+filePathForTable="${dirPathForFastq}/samplesFastqTable.txt"
+
+pathToBwaIndex=$SRC/genomes/bwaIndex/$genome
+filePathForFasta="$SRC/genomes/fasta/${genome}.fa.gz"
+# You need to generate a 'genome' file which is 2 columns with the size of each chromosome.
+# You can decide to filter chromosomes at this step:
+filePathForSizesForBin="$SRC/genomes/fasta/${genome}_chrNumbered.genome"
+
+### Specify the way to deal with dependencies:
+
+# Here we use singularity
+
+# IMAGES
 pathToImages="$SRC/images"
-binSizeCoolMatrix=1000      #bin size, in bp, for the .cool file
-CORES=${SLURM_CPUS_PER_TASK}
+
+wget -nc -O $pathToImages/bwa_0.7.18.sif "http://datacache.galaxyproject.org/singularity/all/bwa:0.7.18--he4a0461_1"
+function bwa() {
+  singularity exec $pathToImages/bwa_0.7.18.sif bwa $*
+}
+wget -nc -O $pathToImages/pairtools.0.3.0 "http://datacache.galaxyproject.org/singularity/all/pairtools:0.3.0--py37h4eba2af_0"
+function pairtools() {
+  singularity exec $pathToImages/pairtools.0.3.0 pairtools $*
+}
+
+wget -nc -O $pathToImages/tabulate:0.7.5--py36_0 "https://depot.galaxyproject.org/singularity/tabulate:0.7.5--py36_0"
+function python() {
+  singularity exec $pathToImages/tabulate:0.7.5--py36_0 python $*
+}
+
+wget -nc -O $pathToImages/cooler.0.10.3 "https://depot.galaxyproject.org/singularity/cooler:0.10.3--pyhdfd78af_0"
+function cooler() {
+  singularity exec $pathToImages/cooler.0.10.3 cooler $*
+}
+function pairix() {
+  singularity exec $pathToImages/cooler.0.10.3 pairix $*
+}
+
+wget -nc -O $pathToImages/pygenometracks.3.9 "https://depot.galaxyproject.org/singularity/pygenometracks:3.9--pyhdfd78af_0"
+function pgt() {
+  singularity exec $pathToImages/pygenometracks.3.9 pgt $*
+}
+function pyGenomeTracks() {
+  singularity exec $pathToImages/pygenometracks.3.9 pyGenomeTracks $*
+}
+# Give access to path with index with fastqs etc
+export APPTAINER_BIND=$SRC
 
 #################
 #### SCRIPT #####
 #################
 
 
-# IMAGES
-wget -nc -O $pathToImages/pairtools.0.3.0 "http://datacache.galaxyproject.org/singularity/all/pairtools:0.3.0--py37h4eba2af_0"
-function samtools() {
-singularity exec $pathToImages/pairtools.0.3.0 pairtools $*
-}
-
-wget -nc -O $pathToImages/tabulate:0.7.5--py36_0 "https://depot.galaxyproject.org/singularity/tabulate:0.7.5--py36_0"
-function python() {
-singularity exec $pathToImages/tabulate:0.7.5--py36_0 python $*
-}
-
-wget -nc -O $pathToImages/cooler.0.10.3 "https://depot.galaxyproject.org/singularity/cooler:0.10.3--pyhdfd78af_0"
-function cooler() {
-singularity exec $pathToImages/cooler.0.10.3 cooler $*
-}
-function pairix() {
-singularity exec $pathToImages/cooler.0.10.3 pairix $*
-}
-
-# python QC script
-wget -nc -0 $pathToImages/get_qc.py https://raw.githubusercontent.com/dovetail-genomics/Micro-C/refs/heads/main/get_qc.py
+# get the python QC script
+wget -nc -O $dirPathForScripts/get_qc.py https://raw.githubusercontent.com/dovetail-genomics/Micro-C/refs/heads/main/get_qc.py
 
 # Check installations 
-bwa --version
-if [ $? -ne 0 ]
+# bwa --version doesn't work
+v=$(bwa 2>&1)
+if [[ "$v" = *"command not found" ]]
 then
   echo "Bwa is not installed but required. Please install it"
   exit 1
 fi
+echo $v
 
 samtools --version
 if [ $? -ne 0 ]
@@ -106,48 +166,151 @@ then
   exit 1
 fi
 
+# Get the sample name and fastq file from the table
+sample=$(cat ${filePathForTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $1}')
+relFilePathFastqR1=$(cat ${filePathForTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $2}')
+relFilePathFastqR2=$(cat ${filePathForTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $3}')
 
-# Get the genome name and fasta file from the table
-sample=$(cat ${pathToFastqTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $1}')
-pathToFastq1=$(cat ${pathToFastqTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $2}')
-pathToFastq2=$(cat ${pathToFastqTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $3}')
+# Each sample is processed into an independent directory:
+pathResults=${dirPathWithResults}/${sample}/
 
-mkdir -p $microc/output/      
-mkdir -p $microc/output/$sample/
+# The directory is created (if not existing)
+mkdir -p ${pathResults}
 
-sample_output_dir="$SRmicrocC/output/$sample/"
+# The name of the sample is written in stdout
+echo ${sample}
 
-# Generate SAM file. Replace R1.fastq and R2.fastq with actual data.
-bwa mem -5SP -T0 -t${CORES} $pathToGenome $pathToFastq1 $pathToFastq2 > "${sample_output_dir}aligned.sam"
+# The analysis part takes part within the pathResults
+cd ${pathResults}
+
+# Generate SAM file
+if [ ! -e aligned.sam ]; then
+  if [ ! -e ${dirPathForFastq}/${relFilePathFastqR1} ]; then
+    # If the fastq does not exists we assume it was an SRA ID
+    mkdir -p ${dirPathForFastq}
+    cd ${dirPathForFastq}
+    # Write version to stdout:
+    fasterq-dump --version
+    if [ $? -ne 0 ]
+    then
+      echo "fasterq-dump is not installed and fastqFile not found so assumed it was a SRA ID.
+Please install it for example in the conda environment (sra-tools>=2.11)."
+      exit 1
+    fi
+    fasterq-dump -o ${sample}.fastq ${relFilePathFastqR1}
+    if [ ! -s ${sample}_1.fastq ]; then
+        echo "FASTQ R1 IS EMPTY"
+        exit 1
+    fi
+    gzip ${sample}_1.fastq
+    gzip ${sample}_2.fastq
+    cd $pathResults
+    relFilePathFastqR1=${sample}_1.fastq.gz
+    relFilePathFastqR2=${sample}_2.fastq.gz
+  fi
+  if [ ! -s ${dirPathForFastq}/${relFilePathFastqR1} ]; then
+    echo "FASTQ R1 IS EMPTY"
+    exit 1
+  fi
+  bwa mem -5SP -T0 -t${nbOfThreads} $pathToBwaIndex ${dirPathForFastq}/${relFilePathFastqR1} \
+    ${dirPathForFastq}/${relFilePathFastqR2} > aligned.sam
+else
+  echo "aligned.sam already exists"
+fi
 
 # Record valid ligation events.
-pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in ${CORES} --nproc-out ${CORES} --chroms-path "${pathToGenome}.genome" "${sample_output_dir}aligned.sam" > "${sample_output_dir}parsed.pairsam"
+if [ ! -e parsed.pairsam ]; then
+  pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --chroms-path "$filePathForSizesForBin" "aligned.sam" > "parsed.pairsam"
+else
+  echo "parsed.pairsam already exists"
+fi
 
 # Sort the parsed.pairsam.
-pairtools sort --nproc ${CORES} --tmpdir=/tmp "${sample_output_dir}parsed.pairsam" > "${sample_output_dir}sorted.pairsam"
+if [ ! -e sorted.pairsam]; then
+  pairtools sort --nproc ${nbOfThreads} --tmpdir=$(mktemp -d) "parsed.pairsam" > "sorted.pairsam"
+else
+  echo "sorted.pairsam already exists"
+fi
 
 # Remove PCR duplicates
-pairtools dedup --nproc-in ${CORES} --nproc-out ${CORES} --mark-dups --output-stats "${sample_output_dir}stats.txt" --output "${sample_output_dir}dedup.pairsam" "${sample_output_dir}sorted.pairsam"
+if [ ! -e dedup.pairsam ]; then
+  pairtools dedup --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --mark-dups --output-stats "stats.txt" --output "dedup.pairsam" "sorted.pairsam"
+else
+  echo "dedup.pairsam already exists"
+fi
 
 # Generate .pair and BAM files
-pairtools split --nproc-in ${CORES} --nproc-out ${CORES} --output-pairs "${sample_output_dir}mapped.pairs" --output-sam "${sample_output_dir}unsorted.bam" "${sample_output_dir}dedup.pairsam"
+if [ ! -e mapped.pairs ]; then
+  pairtools split --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --output-pairs "mapped.pairs" --output-sam "unsorted.bam" "dedup.pairsam"
+else
+  echo "mapped.pairs already exists"
+fi
 
 ## Sort and index BAM file
-# samtools sort -@${CORES} -T temp/temp.bam -o "${sample_output_dir}mapped.PT.bam" "${sample_output_dir}unsorted.bam" 
+# Can be used to generate a coverage
+# samtools sort -@${nbOfThreads} -T temp/temp.bam -o "mapped.PT.bam" "unsorted.bam" 
 # samtools index "$sample_output_dir/${sample}.mapped.PT.bam"
 
 # Run QC script
-python get_qc.py -p "${sample_output_dir}stats.txt" 
+python get_qc.py -p "stats.txt" 
 
-# Save the stats in a common file for all samples
-mkdir $microc/output/stats_all/
-touch $microc/output/stats_all/stats_all.txt
-echo -e "$sample" >> $microc/output/stats_all/stats_all.txt
-cat "${sample_output_dir}stats.txt" >> "$microc/output/stats_all/"
+# I think we will do it with multiQC
+# # Save the stats in a common file for all samples
+# mkdir $microc/output/stats_all/
+# touch $microc/output/stats_all/stats_all.txt
+# echo -e "$sample" >> $microc/output/stats_all/stats_all.txt
+# cat "stats.txt" >> "$microc/output/stats_all/"
 
 # Generate contact matrix for .pairs with cooler
-bgzip "${sample_output_dir}mapped.pairs" > "${sample_output_dir}mapped.pairs.gz"
-pairix "${sample_output_dir}mapped.pairs" > "${sample_output_dir}mapped.pairs.gz"
-cooler cload pairix -p 16 "${pathToGenome}.genome":$binSizeCoolMatrix "${sample_output_dir}mapped.pairs.gz" "${sample_output_dir}matrix${binSizeCoolMatrix}bp.cool"
-cooler zoomify --balance -p ${CORES} "${sample_output_dir}matrix${binSizeCoolMatrix}bp.cool"
+# Bgzip the pairs:
+if [ ! -e ${sample}.pairs.gz ]; then
+  bgzip -c "mapped.pairs" > "${sample}.pairs.gz"
+else
+  echo "${sample}.pairs.gz already exists"
+fi
+# Index them
+# Not sure about the tbi
+if [ ! -e ${sample}.pairs.gz.tbi ]; then
+  pairix "${sample}.pairs.gz"
+else
+  echo "${sample}.pairs.gz already indexed"
+fi
+# Create the cooler at smaller resolution
+if [ ! -e ${sample}_raw.${binSizeCoolMatrix}kb.cool ]; then
+  cooler cload pairix -p 16 ${filePathForSizesForBin}:${binSizeCoolMatrix}000 "${sample}.pairs.gz" ${sample}_raw.${binSizeCoolMatrix}kb.cool
+else
+  echo "${sample}_raw.${binSizeCoolMatrix}kb.cool already exists"
+fi
+# Zoomify
+if [ ! -e ${sample}.mcool ]; then
+  cooler zoomify --balance -p ${nbOfThreads} --resolutions ${binSizeCoolMatrix}000N -o ${sample}.mcool "matrix${binSizeCoolMatrix}bp.cool"
+else
+  echo "${sample}.mcool already exists"
+fi
 
+# Plot generation
+ini_file=${sample}.ini
+echo "[x-axis]" > $ini_file
+for bin in $bins; do
+  echo "[${sample}_${bin}kb]
+file = ${sample}.mcool::/${bin}000
+depth = 2000000
+min_value = 0
+title = ${sample}_${bin}kb
+[spacer]
+" >> ${ini_file}
+done
+echo "[x-axis]" >> ${ini_file}
+# Generate a basic plot on the testRegion
+pgt --tracks ${ini_file} --region ${testRegion} --fontSize 6 -o ${ini_file/.ini/_testRegion.pdf}
+
+
+# Copy all final files to specific directories
+mkdir -p ${dirPathWithResults}/allFinalFiles/cool
+cp *.mcool ${dirPathWithResults}/allFinalFiles/cool/
+mkdir -p ${dirPathWithResults}/allFinalFiles/reports
+cp stats.txt ${dirPathWithResults}/allFinalFiles/reports/${sample}.stats.txt
+mkdir -p ${dirPathWithResults}/allFinalFiles/pairs
+cp ${sample}.pairs.gz ${dirPathWithResults}/allFinalFiles/pairs/
+mkdir -p ${dirPathWithResults}/allFinalFiles/visualisation
+cp *.pdf ${dirPathWithResults}/allFinalFiles/visualisation
