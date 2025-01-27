@@ -46,4 +46,3 @@ wget -nc -O $filePathForFasta $genomeURL
 gunzip -c $filePathForFasta > genomeUnzipped.fa
 bgzip genomeUnzipped.fa # is it okay to run this in the front end? yes
 mv genomeUnzipped.fa.gz $filePathForFasta
-rm genomeUnzipped.fa
