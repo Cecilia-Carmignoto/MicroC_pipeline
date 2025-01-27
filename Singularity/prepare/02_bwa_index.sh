@@ -58,7 +58,7 @@ fi
 
 # Get the genome name and fasta file from the genomesTable
 genome=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $1}')
-#filePathForFasta=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $2}')
+filePathForFasta=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $2}')
 
 # Adapt pathToBwaIndex to the name of the genome:
 pathToBwaIndex=${pathToBwaIndex/__genome__/${genome}}
@@ -69,7 +69,7 @@ if [ ! -e ${pathToBwaIndex}.bwt ]; then
     samtools faidx $pathToBwaIndex
     cut -f1,2 "${pathToBwaIndex}.fai" > "${pathToBwaIndex}.genome"
     grep -E '^chr([1-9]|1[0-9]|2[0-2])\t' "${pathToBwaIndex}.genome" > "${pathToBwaIndex}.genome"
-    bwa index $pathToBwaIndex
+    bwa index -p "$pathToBwaIndex" "$filePathForFasta"
 else
     echo "bwa index seems to already exists. If you want to regenerate it. Please remove it before running the job."
 fi
