@@ -316,7 +316,7 @@ ini_file=${sample}.ini
 echo "[x-axis]" > $ini_file
 for bin in $bins; do
   echo "[${sample}_${bin}kb]
-file = ${sample}.mcool::/${bin}000
+file = ${sample}.mcool::/resolutions/${bin}000
 depth = 2000000
 min_value = 0
 title = ${sample}_${bin}kb
