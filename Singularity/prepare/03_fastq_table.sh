@@ -2,16 +2,16 @@
 
 # Script to generate the samplesFastqTable where:
 # firt column is the sample name
-# second column is the fastq1 path
-# third column is the fasq2 path
+# second column is the relative fastq1 path
+# third column is the relative fastq2 path
 
 #################
 #### SET UP #####
 #################
 
 # Define the parent directory containing sample folders
-mkdir -p $microc/fastq/
-pathToFastq="$microc/fastq/"
+mkdir -p $microcPilot/fastq/
+pathToFastq="$microcPilot/fastq/"
 
 #################
 #### SCRIPT #####
@@ -20,8 +20,10 @@ pathToFastq="$microc/fastq/"
 # Initialize the output file
 output_file="$pathToFastq/samplesFastqTable.txt"
 
+cd $pathToFastq
+
 # Iterate over each sample directory
-for sample_dir in "$pathToFastq"/*/; do
+for sample_dir in */; do
     # Extract the sample name (folder name)
     sample_name=$(basename "$sample_dir")
 
