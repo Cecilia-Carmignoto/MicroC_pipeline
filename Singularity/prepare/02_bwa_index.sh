@@ -1,11 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name bwa_index 
-#SBATCH --time 10:00 
-#SBATCH --clusters=mesopsl1
-#SBATCH --partition=hi
-#SBATCH --qos=mesopsl1_hi_short	
-#SBATCH --account=ijerkovic
+#SBATCH --time 2:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=12 #max in mesopsl1 is 16 so let's try
@@ -69,11 +65,10 @@ pathToBwaIndex=${pathToBwaIndex/__genome__/${genome}}
 
 # Index genome
 if [ ! -e ${pathToBwaIndex}.bwt ]; then
-
-    samtools faidx $pathToBwaIndex
-    cut -f1,2 "${pathToBwaIndex}.fai" > "${pathToBwaIndex}.genome"
-    grep -E '^chr([1-9]|1[0-9]|2[0-2])\t' "${pathToBwaIndex}.genome" > "${pathToBwaIndex}.genome"
-    bwa index -p "$pathToBwaIndex" "$filePathForFasta"
+  if [ ! -e ${filePathForFasta}.fai ]; then
+    samtools faidx "$filePathForFasta"
+  fi
+  bwa index -p "$pathToBwaIndex" "$filePathForFasta"
 else
-    echo "bwa index seems to already exists. If you want to regenerate it. Please remove it before running the job."
+  echo "bwa index seems to already exists. If you want to regenerate it. Please remove it before running the job."
 fi
