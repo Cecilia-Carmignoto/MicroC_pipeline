@@ -15,15 +15,18 @@ In mesoPSL srver $HOME is /obs/ijerkovic. Check how much space I have.
 Set the dir $SRC as the source dir where everyhing starts from. Then the $microc dir inside where to do the microC analysis.
 $SRC/cecilia is for SLURM error messages and outputs if no absolut path is defined inthe scripts.
 
-For github set up: generate tocken form Setting > Developer settings > Personal acess tokens > Tokens (classic) > Generate new tocken. A Personal Access Tocken wil be genrated , that is the password to use when doing git clone.
+For github set up: generate a ssh key on the machine with ssh-keygen and put the public key on github.
+
 ```
 cd $HOME 
-git clone https://github.com/Cecilia-Carmignoto/Micro-C_pipeline
-checkout Lucille
+git clone git@github.com:Cecilia-Carmignoto/Micro-C_pipeline.git
+cd Micro-C_pipeline
+git checkout Lucille
 ```
 
 Export variables for dirs in the ./bashrc
 ```
+echo '## FOR MICROC' >> $HOME/.bashrc
 echo 'export SRC=/scratch/ldelisle/NGS' >> $HOME/.bashrc
 echo 'export microc=$SRC/microc' >> $HOME/.bashrc 
 echo 'export microcPilot=$SRC/microc/pilot' >> $HOME/.bashrc 
@@ -91,5 +94,5 @@ bash $PREP/03_fastq_table.sh
 
 The script needs the indexed reference genome
 ```
-bash --chdir $SRC $RUN/04_from_fastq_to_valid_pairs_and_mcool.sh
+sbatch --chdir $SRC $RUN/04_from_fastq_to_valid_pairs_and_mcool.sh
 ```
