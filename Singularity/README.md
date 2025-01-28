@@ -112,15 +112,13 @@ dirPathForFastq="${microcPilot}/fastq/"
 cd $dirPathForFastq
 sample=SRR29294642
 fasterq-dump -o ${sample}.fastq ${sample}
-gzip ${sample}_1.fastq
-gzip ${sample}_2.fastq
 ```
 
 Get only 50 million reads:
 
 ```bash
 for r in 1 2; do
-    zcat ${sample}_${r}.fastq.gz | head -n 200000000 | gzip > ${sample}_50M_${r}.fastq.gz
+    head -n 200000000 ${sample}_${r}.fastq | gzip > ${sample}_50M_${r}.fastq.gz
 done
 ```
 
