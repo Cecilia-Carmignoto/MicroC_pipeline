@@ -7,7 +7,7 @@
 #SBATCH --mem 50G # The memory needed depends on the size of the genome
 #SBATCH --cpus-per-task 24 # This allows to speed the indexing
 #SBATCH --time 3:00:00 # This depends on the size of the fasta
-#SBATCH --array=26-27 # Put here the rows from the table that need to be processed in the table
+#SBATCH --array=1-27 # Put here the rows from the table that need to be processed in the table
 #SBATCH --job-name runMicroC # Job name that appear in squeue as well as in output and error text files
 
 ##################################
@@ -276,6 +276,13 @@ fi
 
 # Run QC script
 python $dirPathForScripts/get_qc.py -p "${sample}.stats.txt"  > ${sample}.pretty.stats.txt
+
+grep -v tabulate $dirPathForScripts/get_qc.py > get_qc_tsv.py
+echo "
+print('\n'.join(['\t'.join(v) for v in table]))
+" >> get_qc_tsv.py
+
+python $dirPathForScripts/get_qc.py -p "${sample}.stats.txt"  > ${sample}.pretty.stats.tsv
 
 # I think we will do it with multiQC
 # # Save the stats in a common file for all samples
