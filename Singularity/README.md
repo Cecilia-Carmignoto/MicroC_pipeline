@@ -40,6 +40,7 @@ mkdir -p $microcPilot
 mkdir -p $microcFullData
 mkdir -p $SRC/genomes
 mkdir -p $SRC/images
+mkdir -p $microcPilot/outputs
 ```
 
 Make scripts executable

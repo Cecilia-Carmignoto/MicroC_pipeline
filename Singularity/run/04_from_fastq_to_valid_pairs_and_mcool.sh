@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task 24 # This allows to speed the indexing
 #SBATCH --time 3:00:00 # This depends on the size of the fasta
 #SBATCH --array=1-25 # Put here the rows from the table that need to be processed in the table
-#SBATCH --job-name bwa_index # Job name that appear in squeue as well as in output and error text files
+#SBATCH --job-name runMicroC # Job name that appear in squeue as well as in output and error text files
 #SBATCH --chdir /cecilia # This directory must exists, this is where will be the error and out files. and where it starts
 
 #################
@@ -115,7 +115,9 @@ pathToFastq2=$(cat ${pathToFastqTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{
 mkdir -p $microc/output/      
 mkdir -p $microc/output/$sample/
 
-sample_output_dir="$SRmicrocC/output/$sample/"
+sample_output_dir="$microcC/output/$sample/"
+
+echo ${sample}
 
 # Generate SAM file. Replace R1.fastq and R2.fastq with actual data.
 bwa mem -5SP -T0 -t${CORES} $pathToGenome $pathToFastq1 $pathToFastq2 > "${sample_output_dir}aligned.sam"

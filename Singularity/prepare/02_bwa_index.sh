@@ -32,6 +32,9 @@ pathToImages="$SRC/images"
 #### SCRIPT #####
 #################
 
+# load singularity
+module load singularity
+
 # Pull images
 # bwa
 wget -nc -O $pathToImages/bwa_0.7.18.sif "http://datacache.galaxyproject.org/singularity/all/bwa:0.7.18--he4a0461_1"
