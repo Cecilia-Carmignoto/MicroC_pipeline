@@ -282,7 +282,7 @@ echo "
 print('\n'.join(['\t'.join(v) for v in table]))
 " >> get_qc_tsv.py
 
-python $dirPathForScripts/get_qc.py -p "${sample}.stats.txt"  > ${sample}.pretty.stats.tsv
+python get_qc_tsv.py -p "${sample}.stats.txt"  > ${sample}.pretty.stats.tsv
 
 # I think we will do it with multiQC
 # # Save the stats in a common file for all samples
@@ -340,7 +340,7 @@ pgt --tracks ${ini_file} --region ${testRegion} --fontSize 6 -o ${ini_file/.ini/
 mkdir -p ${dirPathWithResults}/allFinalFiles/cool
 cp *.mcool ${dirPathWithResults}/allFinalFiles/cool/
 mkdir -p ${dirPathWithResults}/allFinalFiles/reports
-cp *.stats.txt ${dirPathWithResults}/allFinalFiles/reports/
+cp *.stats.* ${dirPathWithResults}/allFinalFiles/reports/
 mkdir -p ${dirPathWithResults}/allFinalFiles/pairs
 cp ${sample}.pairs.gz ${dirPathWithResults}/allFinalFiles/pairs/
 mkdir -p ${dirPathWithResults}/allFinalFiles/visualisation
