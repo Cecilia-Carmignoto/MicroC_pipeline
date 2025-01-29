@@ -7,7 +7,7 @@
 #SBATCH --mem 50G # The memory needed depends on the size of the genome
 #SBATCH --cpus-per-task 24 # This allows to speed the indexing
 #SBATCH --time 3:00:00 # This depends on the size of the fasta
-#SBATCH --array=1-27 # Put here the rows from the table that need to be processed in the table
+#SBATCH --array=28-29 # Put here the rows from the table that need to be processed in the table
 #SBATCH --job-name runMicroC # Job name that appear in squeue as well as in output and error text files
 
 ##################################

@@ -142,6 +142,24 @@ echo -e "${sample}_50M_full\t${sample}_50M_1.fastq.gz\t${sample}_50M_2.fastq.gz
 ${sample}_50M_50bp\t${sample}_50M_50bp_1.fastq.gz\t${sample}_50M_50bp_2.fastq.gz" >> samplesFastqTable.txt
 ```
 
+Get only 10/25 million reads:
+
+```bash
+for r in 1 2; do
+    head -n 100000000 ${sample}_${r}.fastq | gzip > ${sample}_25M_${r}.fastq.gz
+done
+for r in 1 2; do
+    head -n 40000000 ${sample}_${r}.fastq | gzip > ${sample}_10M_${r}.fastq.gz
+done
+```
+
+Add these 2 to the table with fastqs:
+
+```bash
+echo -e "${sample}_25M\t${sample}_25M_1.fastq.gz\t${sample}_25M_2.fastq.gz
+${sample}_10M\t${sample}_10M_1.fastq.gz\t${sample}_10M_2.fastq.gz" >> samplesFastqTable.txt
+```
+
 ## Aggregate all reports in one
 
 ```bash
