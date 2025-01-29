@@ -156,6 +156,27 @@ cd $microcPilot/outputs
 multiqc . -m pairtools --force
 ```
 
+Joins the pretty reports:
+
+```bash
+all_pretty=$(ls allFinalFiles/reports/*pretty*.tsv)
+file1=""
+for file in $all_pretty; do
+  if [ -z $file1 ]; then
+    sample=$(basename ${file/.pretty.stats.tsv//})
+    echo -e "Name\tnb_$sample\tpct_$sample" | cat - $file > join.tmp
+    file1="OK"
+  else
+    sample=$(basename ${file/.pretty.stats.tsv//})
+    echo -e "Name\tnb_$sample\tpct_$sample" | cat - $file > join.input2.tmp
+    join -t$'\t' --nocheck-order join.tmp join.input2.tmp > join.tmp.1
+    mv join.tmp.1 join.tmp
+  fi
+done
+rm join.input2.tmp
+mv join.tmp combined.stats.pretty.tsv
+```
+
 ## Make a general plot
 
 ```bash
