@@ -54,9 +54,9 @@ chmod +x $RUN/04_from_fastq_to_valid_pairs_and_mcool.sh
 
 ## Create reference genome table
 Generate table for the reference genome data.
-In the genomes table: first column is the genome name in the format hg38.fa.gz, second column is the http of the fastq to be downloaded.
+In the genomes table: first column is the genome name in the format hg38.fa.gz, second column is the path to the fasta file, third is the url.
 ```
-echo -e "hg38.fa.gz\thttps://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz\nmm39.fa.gz\thttps://hgdownload.soe.ucsc.edu/goldenPath/mm39/bigZips/mm39.fa.gz" > $SRC/genomes/genomesTable.txt
+echo -e "hg38\t$SRC/genomes/fasta/hg38.fa.gz\thttps://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz\nmm39\t$SRC/genomes/fasta/mm39.fa.gz\thttps://hgdownload.soe.ucsc.edu/goldenPath/mm39/bigZips/mm39.fa.gz" > $SRC/genomes/genomesTable.txt
 ```
 
 ## Download data and genome
