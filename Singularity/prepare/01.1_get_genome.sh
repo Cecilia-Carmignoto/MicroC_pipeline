@@ -2,6 +2,7 @@
 set -e # if a line in the middle fails the script fails
 
 # TO RUN ONLY ONCE
+
 # Download of the reference genome
 # Choose which reference genome to use by setting the variable genomeLine. (check genomesTable.txt and chose the line)
 
@@ -46,4 +47,11 @@ wget -nc -O $filePathForFasta $genomeURL
 gunzip -c $filePathForFasta > genomeUnzipped.fa
 bgzip genomeUnzipped.fa 
 mv genomeUnzipped.fa.gz $filePathForFasta
-rm genomeUnzipped.fa
+
+# Generate the genome file only with numbered chromosomes:
+if [ ! -e ${filePathForFasta}.fai ]; then
+  samtools faidx "$filePathForFasta"
+fi
+cut -f1,2 "${filePathForFasta}.fai" > "${filePathForFasta}.genome"
+# Filter to get only the numbered chromosomes:
+grep -P '^chr([1-9]|1[0-9]|2[0-2])\t' "${filePathForFasta}.genome" > "$SRC/genomes/fasta/${genomeName}_chrNumbered.genome"
