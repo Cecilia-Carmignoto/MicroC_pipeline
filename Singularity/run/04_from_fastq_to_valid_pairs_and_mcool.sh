@@ -224,6 +224,7 @@ Please install it for example in the conda environment (sra-tools>=2.11)."
     echo "FASTQ R1 IS EMPTY"
     exit 1
   fi
+  # -5 is for split alignemnent, takes the alignemnte of the 5' read as primary. -S skips mate rescue, -P skips pairing. -T sets the minimus mapping quality (we want all reads to compute the stats)
   bwa mem -5SP -T0 -t${nbOfThreads} $pathToBwaIndex ${dirPathForFastq}/${relFilePathFastqR1} \
     ${dirPathForFastq}/${relFilePathFastqR2} > ${sample}.sam
 else
@@ -231,6 +232,9 @@ else
 fi
 
 # Record valid ligation events.
+# --min-mapq is the Mapping quality threshold for defining an alignment as a multi-mapping alignment. 
+# --walks-policy is to handle multi mapping alignements.
+# 5unique is used to report the 5’-most unique alignment on each side, if present (one or both sides may map to different locations on the genome, producing more than two alignments per DNA molecule)
 if [ ! -e ${sample}.parsed.pairsam ]; then
   pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --chroms-path "$filePathForSizesForBin" "${sample}.sam" > "${sample}.parsed.pairsam"
 else
@@ -245,20 +249,21 @@ else
 fi
 
 # Remove PCR duplicates
+# duplicate pairs are marked as DD in “pair_type” and as a duplicate in the sam entries.
 if [ ! -e ${sample}.dedup.pairsam ]; then
   pairtools dedup --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --mark-dups --output-stats "stats.txt" --output "${sample}.dedup.pairsam" "${sample}.sorted.pairsam"
 else
   echo "dedup.pairsam already exists"
 fi
 
-# Generate .pair and BAM files
+# Generate .pair and final BAM file
 if [ ! -e ${sample}.mapped.pairs ]; then
   pairtools split --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --output-pairs "${sample}.mapped.pairs" --output-sam "${sample}.unsorted.bam" "${sample}.dedup.pairsam"
 else
   echo "${sample}.mapped.pairs already exists"
 fi
 
-## Sort and index BAM file
+## Sort and index the final BAM file
 # Can be used to generate a coverage
 # samtools sort -@${nbOfThreads} -T temp/temp.bam -o "${sample}.mapped.PT.bam" "${sample}unsorted.bam" 
 # samtools index "$sample_output_dir/${sample}.mapped.PT.bam"

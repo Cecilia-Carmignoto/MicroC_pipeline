@@ -6,7 +6,7 @@ To handle dependencies singularity images have been used from https://depot.gala
 
 The pipeline follows https://micro-c.readthedocs.io/en/latest/index.html.
 
-## Set up
+## General set up
 For github set up: generate a ssh key on the machine with ssh-keygen and put the public key on github.
 
 ```bash
@@ -14,8 +14,7 @@ cd $HOME
 git clone https://github.com/lldelisle/myNGSanalysis/tree/main/hpc/MicroC
 ```
 
-Export variables for dirs in the ./bashrc
-
+Export variables for dirs in the ./bashrc.
 Adapt it. 
 ```bash
 echo '## FOR MICROC' >> $HOME/.bashrc
@@ -49,33 +48,33 @@ chmod +x $RUN/04_from_fastq_to_valid_pairs_and_mcool.sh
 ```
 
 ## Create reference genome table
-Generate table for the reference genome data.
-In the genomes table: first column is the genome name in the format hg38.fa.gz, second column is the path to the fasta file, third is http of the fastq to be downloaded.
+Generate a reference genome table where the first column is the genome name in the format hg38.fa.gz, the second column is the path to the fasta file, the third is http of the fastq to be downloaded.
 ```bash
 echo -e "hg38\t$SRC/genomes/fasta/hg38.fa.gz\thttps://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz\nmm39\t$SRC/genomes/fasta/mm39.fa.gz\thttps://hgdownload.soe.ucsc.edu/goldenPath/mm39/bigZips/mm39.fa.gz" > $SRC/genomes/genomesTable.txt
 ```
 
 ## Download data and genome
 
-Genome: open script and check paths. set the variable genomeLine to 1 if you want hg38, 2 if you want mm39.
 ```bash
 bash $PREP/01.1_get_genome.sh
 ```
-
-Get the fastq files form s3 with aws.
+Here the genome is downloaded. 
+The 'genome' file is generated where the first column is chromosome name and the second column the dimension of the chrnomosome. 
+Also a 'genome' file with only the numbered chromosomes is created.
 ```bash
 bash $PREP/01.2_get_fastq.sh
 ```
 
 ## Index the genome
--chdir $SRC is to set the dir where to write outputs that have no path indication in the scripts and for the .log and error files.
-Modify the SBATCH --array=1-1 where 1-1 is the interval of rows to process in the table
+The genome is indexed with bwa.
+
+In the script, modify the SBATCH --array=1-1 where 1-1 is the interval of rows to process in the table. Put 1-1 if you wan the hg38 genome. Put 2-2 if you want the mm39 genome
 ```bash
 sbatch --chdir $SRC $PREP/02_bwa_index.sh
 ```
 
-## Create Sequencing data reference table
-Generate tables for the sequencing data.
+## Create samples fastq reference table
+Generate tables for the samples sequencing data.
 In the samplesFastqTable: first column is the sample name, second column is the fastq1 path, third column is the fastq2 path.
 CHECK: fastq names have to end in '1.fq.gz' (for read 1), '2.fq.gz' (for read 2)
 
@@ -85,7 +84,8 @@ bash $PREP/03_fastq_table.sh
 
 ## MicroC analysis
 
-The script needs the indexed reference genome
+This script needs the 'genome' file, index file and reference fasta file.
+
 ```bash
 sbatch --chdir $SRC $RUN/04_from_fastq_to_valid_pairs_and_mcool.sh
 ```

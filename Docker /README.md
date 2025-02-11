@@ -22,18 +22,14 @@ docker build --platform linux/amd64 -t microc .
 ```
 docker run --platform linux/amd64 -it microc
 ``` 
-If you want to be able to access files in the host from the image, you need to mount volumes.
-add -v <dir_you_want_to_acess>:<where_you_want_it_on_the_image>. Must write the absolute path.
-Note: the new dir in the image cannot be named as a prexisting dir (built with the dockerfile), it would overwrite it, deleting everyhting there is inside.
-
-For example I may want to access data stored in the host. Or save the output on the image in a directoy in the host(the dir in the host must be created already in the host).
-
+If you want to be able to access files in the host from the image, you need to mount volumes use the option 
+Note: the new dir in the image cannot be named as a prexisting dir (built with the dockerfile), it would overwrite it.
 ```
 docker run -it --rm -v /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeline/data:/data\
 -v /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeline/output:/output \
 --platform linux/amd64 microc . 
 ```
-Now you are inside the container and can work in it interactively with the command line
+Now you are inside the container and can work in it interactively with the command line.
 
 # Run the analysis step by step in the container
 
