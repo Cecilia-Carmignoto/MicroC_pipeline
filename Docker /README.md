@@ -31,7 +31,7 @@ docker run -it --rm -v /Users/cecilia.carmignoto/Documents/GitHub/Micro-C_pipeli
 ```
 Now you are inside the container and can work in it interactively with the command line.
 
-# Run the analysis step by step in the container
+# Run the analysis through command line interacting with the container
 
 ## Before starting
 If test data are needed
