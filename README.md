@@ -1,5 +1,5 @@
 
-# Introductiom
+# Introduction
 Here you find the scripts to run a Micro-C analysis. 
 
 To handle dependencies singularity images have been used from https://depot.galaxyproject.org/singularity/.
