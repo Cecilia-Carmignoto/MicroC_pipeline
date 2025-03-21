@@ -38,15 +38,6 @@ mkdir -p $SRC/images
 mkdir -p $microcPilot/outputs
 ```
 
-Make scripts executable
-```bash
-chmod +x $PREP/01.1_get_genome.sh
-chmod +x $PREP/01.2_get_fastq.sh
-chmod +x $PREP/03_fastq_table.sh
-chmod +x $PREP/02_bwa_index.sh
-chmod +x $RUN/04_from_fastq_to_valid_pairs_and_mcool.sh
-```
-
 ### Create reference genome table
 Generate a reference genome table where the first column is the genome name in the format hg38.fa.gz, the second column is the path to the fasta file, the third is http of the fastq to be downloaded.
 ```bash
