@@ -8,7 +8,7 @@
 #SBATCH -o slurm-%x-%A_%2a.out # Template for the std output of the job uses the job name, the job id and the array id
 #SBATCH -e slurm-%x-%A_%2a.err # Template for the std error of the job
 #SBATCH --array=2-2 # Put here the row/rows from the table that need to be processed
-#SBATCH --account microc_pilot
+#SBATCH --account microc_pilot # to specify which account on the cluster to use
 #################
 #### SET UP #####
 #################

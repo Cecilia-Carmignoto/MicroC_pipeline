@@ -22,8 +22,8 @@ echo 'export SRC=/shared/projects/microc_pilot' >> $HOME/.bashrc
 echo 'export microc=$SRC/microc' >> $HOME/.bashrc 
 echo 'export microcPilot=$SRC/microc/pilot' >> $HOME/.bashrc 
 echo 'export microcFullData=$SRC/microc/fullData' >> $HOME/.bashrc 
-echo 'export PREP=$HOME/Micro-C_pipeline/Scripts/prepare' >> $HOME/.bashrc
-echo 'export RUN=$HOME/Micro-C_pipeline/Scripts/run' >> $HOME/.bashrc
+echo 'export PREP=$HOME/MicroC_pipeline/Scripts/prepare' >> $HOME/.bashrc
+echo 'export RUN=$HOME/MicroC_pipeline/Scripts/run' >> $HOME/.bashrc
 source $HOME/.bashrc 
 ```
 
@@ -58,12 +58,13 @@ Data can be tranfered with the sft protocol
 ### Index the genome
 The genome is indexed with bwa.
 
-In the script, modify the SBATCH --array=1-1 where 1-1 is the interval of rows to process in the table. Put 1-1 if you wan the hg38 genome. Put 2-2 if you want the mm39 genome
+In the script, modify the SBATCH --array=1-1 where 1-1 is the interval of rows to process in the table. Put 1-1 if you want the hg38 genome. Put 2-2 if you want the mm39 genome.
+
+Files .out and .err will be saved in the directory where you run the script.
 
 ```bash
-sbatch --mem=240GB --array=2-2 -A microc_pilot 02_bwa_inde_trial.sh
+sbatch 02_bwa_index.sh
 ```
--A to specify an account
 
 ### Create samples fastq reference table
 Generate tables for the samples sequencing data.

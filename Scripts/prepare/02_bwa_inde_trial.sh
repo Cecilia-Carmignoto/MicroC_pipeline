@@ -1,5 +1,5 @@
 #!/bin/bash
-#
+
 #SBATCH --time 2:00:00
 #SBATCH --nodes 1
 #SBATCH --ntasks-per-node 1
@@ -8,8 +8,6 @@
 #SBATCH -o slurm-%x-%A_%2a.out # Template for the std output of the job uses the job name, the job id, and the array id
 #SBATCH -e slurm-%x-%A_%2a.err # Template for the std error of the job
 #SBATCH --array=2-2 # Put here the row/rows from the table that need to be processed
-
-set -e
 
 #################
 #### SET UP #####
@@ -71,7 +69,7 @@ function samtools() {
 
 # # Check BWA
 # echo "Checking BWA..."
-# bwa_output=$(singularity exec /shared/projects/microc_pilot/images/bwa_0.7.18.sif bwa index 2>&1)
+# bwa_output=$(singularity exec /shared/projects/microc_pilot/images/bwa_0.7.18.sif bwa 2>&1)
 # if [[ $? -eq 0 ]]; then
 #   echo "BWA is working fine!"
 #   echo "$bwa_output"
@@ -87,6 +85,10 @@ function samtools() {
 # Check samtools
 echo "Checking samtools..."
 samtools --version
+
+
+
+set -e
 
 # Proceed with genome processing
 echo "Fetching genome and fasta..."
