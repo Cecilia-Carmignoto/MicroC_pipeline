@@ -9,7 +9,7 @@
 #SBATCH --time 3:00:00 # This depends on the size of the fasta
 #SBATCH --array 1-1 # Put here the rows from the table that need to be processed in the table
 #SBATCH --job-name runMicroC # Job name that appear in squeue as well as in output and error text files
-#SBATCH --chdir /cecilia # This directory must exists, this is where will be the error and out files. and where it starts
+
 
 ###################################
 #### TO SET FOR EACH ANALYSIS #####
@@ -151,7 +151,10 @@ then
   exit 1
 fi
 
-python -c "import argparse;print(argparse.__version__)"
+# This is not working with singularity because of the quotes
+# python -c "import argparse;print(argparse.__version__)"
+echo "import argparse;print(argparse.__version__)" > test_argparse.py
+python test_argparse.py
 if [ $? -ne 0 ]
 then
   echo "argparse is not installed but required. Please install it"
@@ -165,7 +168,7 @@ then
   exit 1
 fi
 
-pairix --version
+pairix --help
 if [ $? -ne 0 ]
 then
   echo "pairix is not installed but required. Please install it"

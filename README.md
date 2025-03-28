@@ -81,7 +81,7 @@ This script needs the 'genome' file, index file and reference fasta file.
 For details check https://micro-c.readthedocs.io/en/latest/fastq_to_bam.html.
 
 ```bash
-sbatch --chdir $SRC $RUN/04_from_fastq_to_valid_pairs_and_mcool.sh
+sbatch --chdir $RUN $RUN/04_from_fastq_to_valid_pairs_and_mcool.sh
 ```
 
 

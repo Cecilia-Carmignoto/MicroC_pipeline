@@ -1,0 +1,15 @@
+File ‘/shared/projects/microc_pilot/images/bwa_0.7.18.sif’ already there; not retrieving.
+File ‘/shared/projects/microc_pilot/images/pairtools.0.3.0’ already there; not retrieving.
+File ‘/shared/projects/microc_pilot/images/samtools.1.11.sif’ already there; not retrieving.
+File ‘/shared/projects/microc_pilot/images/tabulate:0.7.5--py36_0’ already there; not retrieving.
+File ‘/shared/projects/microc_pilot/images/cooler.0.10.3’ already there; not retrieving.
+File ‘/shared/projects/microc_pilot/images/pygenometracks.3.9’ already there; not retrieving.
+File ‘/shared/projects/microc_pilot/images//get_qc.py’ already there; not retrieving.
+WARNING: Skipping mount /var/lib/apptainer/mnt/session/etc/resolv.conf [files]: /etc/resolv.conf doesn't exist in container
+WARNING: Skipping mount /var/lib/apptainer/mnt/session/etc/resolv.conf [files]: /etc/resolv.conf doesn't exist in container
+WARNING: Skipping mount /var/lib/apptainer/mnt/session/etc/resolv.conf [files]: /etc/resolv.conf doesn't exist in container
+WARNING: Skipping mount /var/lib/apptainer/mnt/session/etc/resolv.conf [files]: /etc/resolv.conf doesn't exist in container
+  File "<string>", line 1
+    import
+         ^
+SyntaxError: invalid syntax

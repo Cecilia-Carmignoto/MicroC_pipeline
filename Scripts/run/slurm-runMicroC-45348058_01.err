@@ -1,0 +1,71 @@
+File ‘/shared/projects/microc_pilot/images/bwa_0.7.18.sif’ already there; not retrieving.
+File ‘/shared/projects/microc_pilot/images/pairtools.0.3.0’ already there; not retrieving.
+File ‘/shared/projects/microc_pilot/images/samtools.1.11.sif’ already there; not retrieving.
+File ‘/shared/projects/microc_pilot/images/tabulate:0.7.5--py36_0’ already there; not retrieving.
+File ‘/shared/projects/microc_pilot/images/cooler.0.10.3’ already there; not retrieving.
+File ‘/shared/projects/microc_pilot/images/pygenometracks.3.9’ already there; not retrieving.
+File ‘/shared/projects/microc_pilot/images//get_qc.py’ already there; not retrieving.
+WARNING: Skipping mount /var/lib/apptainer/mnt/session/etc/resolv.conf [files]: /etc/resolv.conf doesn't exist in container
+WARNING: Skipping mount /var/lib/apptainer/mnt/session/etc/resolv.conf [files]: /etc/resolv.conf doesn't exist in container
+WARNING: Skipping mount /var/lib/apptainer/mnt/session/etc/resolv.conf [files]: /etc/resolv.conf doesn't exist in container
+WARNING: Skipping mount /var/lib/apptainer/mnt/session/etc/resolv.conf [files]: /etc/resolv.conf doesn't exist in container
+
+Program: pairix (PAIRs file IndeXer)
+Version: 0.3.8
+
+Usage:   pairix <in.pairs.gz> [region1 [region2 [...]]]
+
+Options: -p STR     preset: pairs, merged_nodups, old_merged_nodups, gff, bed, sam, vcf, psltbl [gff]
+         -s INT     sequence name column [1]
+         -d INT     second sequence name column [null]
+         -b INT     start1 column [4]
+         -e INT     end1 column; can be identical to '-b' [5]
+         -u INT     start2 column [null]
+         -v INT     end2 column; can be identical to '-u' [null or identical to the start2 specified by -u]
+         -T         delimiter is space instead of tab.
+         -L         query region is not a string but a file listing query regions
+         -S INT     skip first INT lines [0]
+         -c CHAR    symbol for comment/meta lines [#]
+         -w CHAR    symbol for query region separator [|]
+         -r FILE    replace the header with the content of FILE [null]
+         -0         zero-based coordinate
+         -h         print also the header lines
+         -H         print only the header lines
+         -B         print only the number of bgzf blocks for existing chromosome (pairs)
+         -W         print only the region split character
+         -Y         Only check if the file is a triangle (i.e. a chromosome pair occurs only in one direction (e.g. if chr1|chr2 exists, chr2|chr1 doesn't))
+         -l         list chromosome names
+         -n         print only the total line count (same as gunzip -c | wc -l but much faster)
+         -f         force to overwrite the index
+         -a         autoflip query when the matching chromosome pair doesn't exist
+         --help     print usage with exit 0
+
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 2400000 sequences (240000000 bp)...
+[M::process] read 2400000 sequences (240000000 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (12515, 654372, 11896, 12436)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (648, 1685, 3745)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 9939)
+[M::mem_pestat] mean and std.dev: (2558.89, 2449.18)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 13036)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (148, 186, 248)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 448)
+[M::mem_pestat] mean and std.dev: (199.71, 72.81)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 548)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (550, 1608, 3777)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 10231)
+[M::mem_pestat] mean and std.dev: (2508.63, 2501.38)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 13458)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (633, 1698, 3799)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 10131)
+[M::mem_pestat] mean and std.dev: (2570.77, 2457.03)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 13297)
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 2400000 reads in 910.782 CPU sec, 43.724 real sec
+[M::process] read 2400000 sequences (240000000 bp)...
