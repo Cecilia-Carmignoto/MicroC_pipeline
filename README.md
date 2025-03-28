@@ -22,8 +22,8 @@ echo 'export SRC=/shared/projects/microc_pilot' >> $HOME/.bashrc
 echo 'export microc=$SRC/microc' >> $HOME/.bashrc 
 echo 'export microcPilot=$SRC/microc/pilot' >> $HOME/.bashrc 
 echo 'export microcFullData=$SRC/microc/fullData' >> $HOME/.bashrc 
-echo 'export PREP=$HOME/Micro-C_pipeline/Scripts/prepare' >> $HOME/.bashrc
-echo 'export RUN=$HOME/Micro-C_pipeline/Scripts/run' >> $HOME/.bashrc
+echo 'export PREP=$HOME/MicroC_pipeline/Scripts/prepare' >> $HOME/.bashrc
+echo 'export RUN=$HOME/MicroC_pipeline/Scripts/run' >> $HOME/.bashrc
 source $HOME/.bashrc 
 ```
 
