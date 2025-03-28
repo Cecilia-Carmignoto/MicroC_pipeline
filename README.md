@@ -57,22 +57,22 @@ echo -e "hg38\t$SRC/genomes/fasta/hg38.fa.gz\thttps://hgdownload.soe.ucsc.edu/go
 ### Download data and genome
 
 ```bash
-bash $PREP/01.1_get_genome.sh
+sbatch $PREP/01.1_get_genome.sh
 ```
 Here the genome is downloaded. 
 The 'genome' file is generated where the first column is chromosome name and the second column the dimension of the chrnomosome. 
 Also a 'genome' file with only the numbered chromosomes is created.
-```bash
-bash $PREP/01.2_get_fastq.sh
-```
+
+Data can be tranfered with the sft protocol
 
 ### Index the genome
 The genome is indexed with bwa.
 
 In the script, modify the SBATCH --array=1-1 where 1-1 is the interval of rows to process in the table. Put 1-1 if you wan the hg38 genome. Put 2-2 if you want the mm39 genome
 ```bash
-sbatch --chdir $SRC $PREP/02_bwa_index.sh
+sbatch --mem=240GB --array=2-2 -A microc_pilot 02_bwa_inde_trial.sh
 ```
+-A to specify an account
 
 ### Create samples fastq reference table
 Generate tables for the samples sequencing data.

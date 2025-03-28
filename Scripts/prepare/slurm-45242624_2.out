@@ -1,0 +1,48 @@
+=== Starting BWA Indexing Job ===
+Setting up paths and directories...
+Path to genomes table: /shared/projects/microc_pilot/genomes/genomesTable.txt
+BWA Index Directory: /shared/projects/microc_pilot/genomes/bwaIndex/__genome__
+Singularity Image Directory: /shared/projects/microc_pilot/images
+SLURM_ARRAY_TASK_ID: 2
+Loading Singularity module...
+Singularity is loaded.
+Downloading Singularity images if not already available...
+BWA image already downloaded.
+Samtools image already downloaded
+total 55268
+-rw-r--r--+ 1 ccarmignoto99 ccarmignoto99 25366528 Jul 17  2024 bwa_0.7.18.sif
+-rw-rw----+ 1 ccarmignoto99 ccarmignoto99   279603 Mar 27  2016 sample.jpg
+-rw-r--r--+ 1 ccarmignoto99 ccarmignoto99 30932992 Oct  6  2020 samtools.1.11.sif
+total 55268
+-rw-r--r--+ 1 ccarmignoto99 ccarmignoto99 25366528 Jul 17  2024 bwa_0.7.18.sif
+-rw-rw----+ 1 ccarmignoto99 ccarmignoto99   279603 Mar 27  2016 sample.jpg
+-rw-r--r--+ 1 ccarmignoto99 ccarmignoto99 30932992 Oct  6  2020 samtools.1.11.sif
+Checking BWA...
+
+Program: bwa (alignment via Burrows-Wheeler transformation)
+Version: 0.7.18-r1243-dirty
+Contact: Heng Li <hli@ds.dfci.harvard.edu>
+
+Usage:   bwa <command> [options]
+
+Command: index         index sequences in the FASTA format
+         mem           BWA-MEM algorithm
+         fastmap       identify super-maximal exact matches
+         pemerge       merge overlapping paired ends (EXPERIMENTAL)
+         aln           gapped/ungapped alignment
+         samse         generate alignment (single ended)
+         sampe         generate alignment (paired ended)
+         bwasw         BWA-SW for long queries (DEPRECATED)
+
+         shm           manage indices in shared memory
+         fa2pac        convert FASTA to PAC format
+         pac2bwt       generate BWT from PAC
+         pac2bwtgen    alternative algorithm for generating BWT
+         bwtupdate     update .bwt to the new format
+         bwt2sa        generate SA from BWT and Occ
+
+Note: To use BWA, you need to first index the genome with `bwa index'.
+      There are three alignment algorithms in BWA: `mem', `bwasw', and
+      `aln/samse/sampe'. If you are not sure which to use, try `bwa mem'
+      first. Please `man ./bwa.1' for the manual.
+

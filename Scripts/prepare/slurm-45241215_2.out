@@ -1,0 +1,11 @@
+=== Starting BWA Indexing Job ===
+Setting up paths and directories...
+Path to genomes table: /shared/projects/microc_pilot/genomes/genomesTable.txt
+BWA Index Directory: /shared/projects/microc_pilot/genomes/bwaIndex/__genome__
+Singularity Image Directory: /shared/projects/microc_pilot/images
+SLURM_ARRAY_TASK_ID: 2
+Loading Singularity module...
+Singularity is loaded.
+Downloading Singularity images if not already available...
+BWA image already downloaded.
+/var/spool/slurm/slurmd/job45241215/slurm_script: line 107: syntax error: unexpected end of file

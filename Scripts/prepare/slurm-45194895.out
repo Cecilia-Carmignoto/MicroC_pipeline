@@ -1,0 +1,9 @@
+=== Starting BWA Indexing Job ===
+Setting up paths and directories...
+Path to genomes table: 
+BWA Index Directory: 
+Singularity Image Directory: 
+Loading Singularity module...
+Singularity is loaded.
+Downloading Singularity images if not already available...
+/bwa_0.7.18.sif: Permission denied
