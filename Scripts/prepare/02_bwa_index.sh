@@ -1,15 +1,14 @@
 #!/bin/bash
-set -e
 
 #SBATCH --time 2:00:00
 #SBATCH --nodes 1
 #SBATCH --ntasks-per-node 1
 #SBATCH --cpus-per-task 12
-#SBATCH --mem-per-cpu 50G # The memory needed depends on the size of the genome
+#SBATCH --mem-per-cpu 5G # The memory needed depends on the size of the genome
 #SBATCH -o slurm-%x-%A_%2a.out # Template for the std output of the job uses the job name, the job id and the array id
 #SBATCH -e slurm-%x-%A_%2a.err # Template for the std error of the job
 #SBATCH --array=2-2 # Put here the row/rows from the table that need to be processed
-
+#SBATCH --account microc_pilot
 #################
 #### SET UP #####
 #################
@@ -59,6 +58,8 @@ then
   exit 1
 fi
 
+set -e
+
 # Get the genome name and fasta file from the genomesTable
 genome=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $1}')
 filePathForFasta=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $2}')
@@ -67,15 +68,16 @@ filePathForFasta=$(cat ${pathToGenomesTable} | awk -v i=${SLURM_ARRAY_TASK_ID} '
 pathToBwaIndex=${pathToBwaIndex/__genome__/${genome}}
 
 # Index genome
-if [ ! -e ${filePathForFasta}.fai ]; then
-    samtools faidx "$filePathForFasta"
-fi
-  bwa index -p "$pathToBwaIndex" "$filePathForFasta"
+# Check if the BWA index already exists
+if [ ! -e ${pathToBwaIndex}.bwt ]; then
+    # Index genome if index does not exist
+    if [ ! -e ${filePathForFasta}.fai ]; then
+        echo "Indexing genome with samtools faidx..."
+        samtools faidx "$filePathForFasta"
+    fi
+    echo "Running bwa index..."
+    bwa index -p "$pathToBwaIndex" "$filePathForFasta"
 else
-    echo "bwa index seems to already exists. If you want to regenerate it. Please remove it before running the job."
+    echo "BWA index seems to already exist. If you want to regenerate it, please remove it before running the job."
 fi
 
-# samtools faidx $filePathForFasta
-# cut -f1,2 "${pathToBwaIndex}.fai" > "${pathToBwaIndex}.genome"
-# grep -E '^chr([1-9]|1[0-9]|2[0-2])\t' "${pathToBwaIndex}.genome" > "${pathToBwaIndex}.genome"
-# bwa index -p "$pathToBwaIndex" "$filePathForFasta"

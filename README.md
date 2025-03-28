@@ -59,6 +59,7 @@ Data can be tranfered with the sft protocol
 The genome is indexed with bwa.
 
 In the script, modify the SBATCH --array=1-1 where 1-1 is the interval of rows to process in the table. Put 1-1 if you wan the hg38 genome. Put 2-2 if you want the mm39 genome
+
 ```bash
 sbatch --mem=240GB --array=2-2 -A microc_pilot 02_bwa_inde_trial.sh
 ```
