@@ -32,5 +32,5 @@ for sample_dir in */; do
     read2_file=$(find "$sample_dir" -type f -name '*2.fq.gz')
 
     # Append the sample information to the output file
-    echo -e "$sample_name\t$read1_file\t$read2_file" >> "$output_file"
-done
+    echo -e "$sample_name\t$read1_file\t$read2_file"
+done  > "$output_file"
