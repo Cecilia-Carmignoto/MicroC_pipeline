@@ -1,6 +1,5 @@
-
 # Introduction
-Here you find the scripts to run a Micro-C analysis. 
+Here you find the scripts to run the Micro-C analysis in IFBcore. 
 
 To handle dependencies singularity images have been used from https://depot.galaxyproject.org/singularity/.
 
@@ -12,19 +11,19 @@ For github set up: generate a ssh key on the machine with ssh-keygen and put the
 
 ```bash
 cd $HOME 
-git clone https://github.com/lldelisle/myNGSanalysis/tree/main/hpc/MicroC
+git clone -b IFBcore git@github.com:Cecilia-Carmignoto/MicroC_pipeline.git
 ```
 
 Export variables for dirs in the ./bashrc.
 Adapt it. 
 ```bash
 echo '## FOR MICROC' >> $HOME/.bashrc
-echo 'export SRC=/travail/ijerkovic/NGS' >> $HOME/.bashrc
+echo 'export SRC=/shared/projects/microc_pilot' >> $HOME/.bashrc
 echo 'export microc=$SRC/microc' >> $HOME/.bashrc 
 echo 'export microcPilot=$SRC/microc/pilot' >> $HOME/.bashrc 
 echo 'export microcFullData=$SRC/microc/fullData' >> $HOME/.bashrc 
-echo 'export PREP=$HOME/Micro-C_pipeline/Singularity/prepare' >> $HOME/.bashrc
-echo 'export RUN=$HOME/Micro-C_pipeline/Singularity/run' >> $HOME/.bashrc
+echo 'export PREP=$HOME/Micro-C_pipeline/Scripts/prepare' >> $HOME/.bashrc
+echo 'export RUN=$HOME/Micro-C_pipeline/Scripts/run' >> $HOME/.bashrc
 source $HOME/.bashrc 
 ```
 
@@ -37,15 +36,6 @@ mkdir -p $microcFullData
 mkdir -p $SRC/genomes
 mkdir -p $SRC/images
 mkdir -p $microcPilot/outputs
-```
-
-Make scripts executable
-```bash
-chmod +x $PREP/01.1_get_genome.sh
-chmod +x $PREP/01.2_get_fastq.sh
-chmod +x $PREP/03_fastq_table.sh
-chmod +x $PREP/02_bwa_index.sh
-chmod +x $RUN/04_from_fastq_to_valid_pairs_and_mcool.sh
 ```
 
 ### Create reference genome table
