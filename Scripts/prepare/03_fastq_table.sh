@@ -10,8 +10,8 @@
 #################
 
 # Define the parent directory containing sample folders
-mkdir -p $microcPilot/fastq/
-pathToFastq="$microcPilot/fastq/"
+mkdir -p $microcPilot2/fastq/
+pathToFastq="$microcPilot2/fastq/"
 
 #################
 #### SCRIPT #####
@@ -34,3 +34,4 @@ for sample_dir in */; do
     # Append the sample information to the output file
     echo -e "$sample_name\t$read1_file\t$read2_file"
 done  > "$output_file"
+

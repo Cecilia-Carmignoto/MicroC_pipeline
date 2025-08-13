@@ -2,7 +2,7 @@
 # The data are stored in a s3 bucket. We will use the AWS CLI to download them.
 
 # Set directories
-pathToFastq="$microcPilot/fastq/"
+pathToFastq="$microcPilot2/fastq/"
 pathToImages="$SRC/images"
 
 # Pull image
@@ -30,7 +30,8 @@ aws configure
 # Defaul output format:
 
 # Test if the data are found and summarize them
-aws s3 ls --summarize --human-readable --recursive s3://musgzjor-598731762349/F24A430002451_MUSgzjoR_24DEC2024
+aws s3 ls --summarize --human-readable --recursive s3://musmyntr-598731762349/F25A430000598_MUSmyntR_14APR2025/
 
 # Download
-aws s3 sync s3://musgzjor-598731762349/F24A430002451_MUSgzjoR_24DEC2024/ $pathToFastq > permanent_transfert.log 2> permanent_transfert.err 
+aws s3 sync s3://musmyntr-598731762349/F25A430000598_MUSmyntR_14APR2025/ $pathToFastq 
+#> permanent_transfert.log 2> permanent_transfert.err 

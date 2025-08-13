@@ -4,9 +4,9 @@
 #SBATCH -e slurm-%x-%A_%2a.err # Template for the std error of the job
 #SBATCH --nodes 1 # We always use 1 node
 #SBATCH --ntasks 1 # In this script everything is sequencial
-#SBATCH --mem 50G # The memory needed depends on the size of the genome
+#SBATCH --mem 100G 
 #SBATCH --cpus-per-task 24 # This allows to speed the indexing
-#SBATCH --time 3:00:00 # This depends on the size of the fasta
+#SBATCH --time 23:00:00 # This depends on the size of the fasta
 #SBATCH --array 1-1 # Put here the rows from the table that need to be processed in the table
 #SBATCH --job-name runMicroC # Job name that appear in squeue as well as in output and error text files
 
@@ -32,16 +32,16 @@ binSizeCoolMatrix=1
 # chr2:73779626-75669724 HoxD mm10
 testRegion="chr2:73150000-76150000"
 # bins size (in kb) for the plot:
-bins="5 50 500"
+bins="10 20 50"
 
 ### Specify the paths to the directories
 
 # Put in dirPathWithResults the directory
 # where a directory will be created
 # for each sample
-dirPathWithResults="$microcPilot/outputs/"
+dirPathWithResults="$microcPilot2/outputs/"
 # Where fastqs are stored:
-dirPathForFastq="${microcPilot}/fastq/"
+dirPathForFastq="$microcPilot2/fastq/"
 # This script will use get_qc.py
 # from Micro-C:
 # https://raw.githubusercontent.com/dovetail-genomics/Micro-C/refs/heads/main/get_qc.py
@@ -114,6 +114,12 @@ export APPTAINER_BIND=$SRC
 # python QC script
 wget -nc -O $dirPathForScripts/get_qc.py https://raw.githubusercontent.com/dovetail-genomics/Micro-C/refs/heads/main/get_qc.py
 
+# library complexity
+wget -nc -O $pathToImages/preseq:3.2.0--hd36ca80_4.sif "https://depot.galaxyproject.org/singularity/preseq:3.2.0--hd36ca80_4"
+function preseq() {
+  singularity exec $pathToImages/preseq:3.2.0--hd36ca80_4.sif preseq $*
+}
+ 
 # Check installations 
 v=$(bwa 2>&1)
 if [[ "$v" = *"command not found" ]]
@@ -182,8 +188,15 @@ then
   exit 1
 fi
 
+preseq --version
+if [ $? -ne 0 ]
+then
+  echo "preseq is not installed but required. Please install it"
+  exit 1
+fi
 
-# Get the gensampleome name and fastq file from the table
+
+# Get the sample name and fastq file from the table
 sample=$(cat ${filePathForTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $1}')
 relFilePathFastqR1=$(cat ${filePathForTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $2}')
 relFilePathFastqR2=$(cat ${filePathForTable} | awk -v i=${SLURM_ARRAY_TASK_ID} 'NR==i{print $3}')
@@ -198,7 +211,7 @@ echo ${sample}
 # The analysis part takes part within the pathResults
 cd ${pathResults}
 
-# Generate SAM file
+# # Generate SAM file
 if [ ! -e ${sample}.sam ]; then
   if [ ! -e ${dirPathForFastq}/${relFilePathFastqR1} ]; then
     # If the fastq does not exists we assume it was an SRA ID
@@ -239,37 +252,97 @@ fi
 # --walks-policy is to handle multi mapping alignements.
 # 5unique is used to report the 5’-most unique alignment on each side, if present (one or both sides may map to different locations on the genome, producing more than two alignments per DNA molecule)
 if [ ! -e ${sample}.parsed.pairsam ]; then
-  pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --chroms-path "$filePathForSizesForBin" "${sample}.sam" > "${sample}.parsed.pairsam"
-else
-  echo "${sample}.parsed.pairsam already exists"
+  pairtools parse --min-mapq 40 --walks-policy 5unique --max-inter-align-gap 30 \
+    --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} \
+    --chroms-path "$filePathForSizesForBin" "${sample}.sam" > "${sample}.parsed.pairsam"
+  
+  if [ $? -ne 0 ]; then
+    echo "Error: pairtools parse command failed for sample ${sample}"
+    exit 1
+  else
+    echo "Sam size: $(ls ${sample}.sam)"
+    echo "Parsed pairsam created, removing ${sample}.sam"
+    rm -f "${sample}.sam"
+  fi
+else 
+  echo "${sample}.parsed.pairsam already exists"    
 fi
 
-# Sort the ${sample}.parsed.pairsam.
 if [ ! -e ${sample}.sorted.pairsam ]; then
-  pairtools sort --nproc ${nbOfThreads} --tmpdir=$(mktemp -d) "${sample}.parsed.pairsam" > "${sample}.sorted.pairsam"
+  # i specify the tmp dir cause I thinkin the cluster the automatic tmp location might have limits for the tmp file sizes
+  tmpdir=$(mktemp -d /shared/projects/microc_pilot/tmp_${sample}_XXXXXX)
+  # monitor size of the tmp dir. checks every 300 seconds (5 minutes)
+  ( while true; do du -sh "$tmpdir"; sleep 20; done ) &
+  monitor_pid=$!
+
+  pairtools sort \
+    --nproc ${nbOfThreads} \
+    --tmpdir="$tmpdir" \
+    "${sample}.parsed.pairsam" > "${sample}.sorted.pairsam"
+
+  status=$?
+
+  kill $monitor_pid
+
+  if [ $status -ne 0 ]; then
+    echo "❌ Error: pairtools sort command failed for sample ${sample}"
+    rm -rf "$tmpdir"
+    exit 1
+  else
+    echo "✅ Sorted pairsam created, removing parsed"
+    rm -f "${sample}.parsed.pairsam"
+    rm -rf "$tmpdir"
+  fi
 else
-  echo "${sample}.sorted.pairsam already exists"
+  echo "✅ ${sample}.sorted.pairsam already exists"
 fi
+
 
 # Remove PCR duplicates
 # duplicate pairs are marked as DD in “pair_type” and as a duplicate in the sam entries.
 if [ ! -e ${sample}.dedup.pairsam ]; then
   pairtools dedup --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --mark-dups --output-stats "stats.txt" --output "${sample}.dedup.pairsam" "${sample}.sorted.pairsam"
+  if [ $? -ne 0 ]; then
+    echo "Error: pairtools dedup command failed for sample ${sample}"
+    exit 1
+  else
+    echo "Sorted pairsam size: $(ls ${sample}.sorted.pairsam)"
+    echo "Dedup pairsam created, removing ${sample}.sorted.pairsam"
+    rm -f "${sample}.sorted.pairsam"
+  fi
 else
-  echo "dedup.pairsam already exists"
+  echo "${sample}.dedup.pairsam already exists"
 fi
 
 # Generate .pair and final BAM file
 if [ ! -e ${sample}.mapped.pairs ]; then
   pairtools split --nproc-in ${nbOfThreads} --nproc-out ${nbOfThreads} --output-pairs "${sample}.mapped.pairs" --output-sam "${sample}.unsorted.bam" "${sample}.dedup.pairsam"
+
+  if [ $? -ne 0 ]; then
+    echo "Error: pairtools split command failed for sample ${sample}"
+    exit 1
+  else
+    echo "dedup pairsam size: $(ls ${sample}.dedup.pairsam)"
+    ## Sort and index the final BAM file
+    # Can be used to generate a coverage adn library complexity
+    tmpdir=$(mktemp -d /shared/projects/microc_pilot/tmp_${sample}_XXXXXX)
+    echo "Sorting and then indexing ${sample}.unsorted.bam to calculate library complexity"
+    samtools sort -@${nbOfThreads} -T ${tmpdir}/temp.bam -o "${sample}.mapped.PT.bam" "${sample}.unsorted.bam" 
+    samtools index "${sample}.mapped.PT.bam"
+    echo "Calculating library complexity"
+    preseq lc_extrap -bam -pe -extrap 2.1e9 -step 1e8 -seg_len 1000000000 -output ${sample}.preseq ${sample}.mapped.PT.bam
+    if [ $? -ne 0 ]; then
+      echo "Error: preseq lc_extrap command failed for sample ${sample}"
+      exit 1
+    else
+      echo "library complexity sucessuly calculated with preseq. Deleting ${sample}.dedup.pairsam "
+      rm -f "${sample}.dedup.pairsam"
+    fi
+  fi
 else
-  echo "${sample}.mapped.pairs already exists"
+  echo "Skipping ${sample}.mapped.pairs, it already exists"
 fi
 
-## Sort and index the final BAM file
-# Can be used to generate a coverage
-# samtools sort -@${nbOfThreads} -T temp/temp.bam -o "${sample}.mapped.PT.bam" "${sample}unsorted.bam" 
-# samtools index "$sample_output_dir/${sample}.mapped.PT.bam"
 
 # Run QC script
 python $dirPathForScripts/get_qc.py -p "${sample}.stats.txt"  > ${sample}.pretty.stats.txt
@@ -301,7 +374,7 @@ else
 fi
 # Zoomify
 if [ ! -e ${sample}.mcool ]; then
-   singularity exec $pathToImages/cooler.0.10.3 cooler zoomify --balance -p ${nbOfThreads} --resolutions ${binSizeCoolMatrix}000N -o ${sample}.mcool --balance-args '--nproc 24 --cis-only' ${nb}${sample}_raw.${binSizeCoolMatrix}kb.cool
+   singularity exec $pathToImages/cooler.0.10.3 cooler zoomify --balance -p ${nbOfThreads} --resolutions ${binSizeCoolMatrix}000N -o ${sample}.mcool --balance-args '--nproc 24 --cis-only' ${sample}_raw.${binSizeCoolMatrix}kb.cool
 else
   echo "${sample}.mcool already exists"
 fi
